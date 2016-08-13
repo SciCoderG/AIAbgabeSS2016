@@ -1,20 +1,21 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 
+/// <summary>
+/// Data-class for a Field on a Board.
+/// </summary>
+public class Field
+{
+	public int m_Reward{ get; set; }
 
-public class Field : MonoBehaviour {
+	public bool m_Accessible{ get; set; }
 
-	public bool goal = false;
-	public bool reachable = true;
-	public int points = 0;
-
-	// Use this for initialization
-	void Start () {
-	
+	public Field () : this (0)
+	{
+		
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public Field (int reward)
+	{
+		m_Reward = reward;
 	}
 }
