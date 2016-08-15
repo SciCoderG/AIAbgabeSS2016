@@ -9,13 +9,9 @@ public class Field
 
 	public bool m_Accessible{ get; set; }
 
-	public Field () : this (0)
-	{
-		
-	}
-
-	public Field (int reward)
+	public Field (int reward, bool accessible)
 	{
 		m_Reward = reward;
+		m_Accessible = accessible;
 	}
 }

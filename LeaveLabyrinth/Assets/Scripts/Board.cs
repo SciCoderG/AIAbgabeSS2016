@@ -4,7 +4,7 @@ public class Board
 {
 
 
-	private Field[] m_FieldArray;
+	private Field[,] m_FieldMatrix;
 	private int m_RowCount, m_ColumnCount;
 
 	// ActionIDs
@@ -20,7 +20,7 @@ public class Board
 		ACTION_ID_GO_LEFT
 	};
 
-	public Board () : this (4, 3)
+	public Board () : this (3, 4)
 	{
 		
 	}
@@ -30,81 +30,87 @@ public class Board
 		m_RowCount = rows;
 		m_ColumnCount = columns;
 
-		m_FieldArray = new Field[rows * columns];
+		m_FieldMatrix = new Field[rows, columns];
 
-		// Initialize the Fields
-		for (int i = 0; i < m_FieldArray.GetLength (0); i++) {
-			m_FieldArray [i] = new Field ();
+		// Initialize the Field Matrix
+		for (int i = 0; i < m_FieldMatrix.GetLength (0); i++) {
+			for (int j = 0; i < m_FieldMatrix.GetLength (1); j++) {
+				
+			}
 		}
 	}
 
-	/// <summary>
-	/// Gets the requested field.
-	/// </summary>
-	/// <returns>The requested field.</returns>
-	/// <param name="row">Row.</param>
-	/// <param name="column">Column.</param>
 	public Field getField (int row, int column)
 	{
-		int index = row * m_ColumnCount + column;
-		return m_FieldArray [index];
+		return m_FieldMatrix [row, column];
 	}
 
+
 	/// <summary>
-	/// Take the specified action in the specified state
+	/// Validate the action. If valid, returns the reward for the action and the new state we're in
 	/// </summary>
-	/// <returns><c>true</c>, if action is possible, <c>false</c> otherwise.</returns>
-	/// <param name="stateID">Origin State.</param>
-	/// <param name="actionID">Action taken.</param>
-	/// <param name="reward">Reference to Feedback for specified action, used to return reward</param>
-	/// <param name="newState">Reference to the new state-ID, used to return the new state ID.</param>
-	public bool takeAction (int stateID, int actionID, ref int reward, ref int newState)
+	/// <returns><c>true</c>, if action was valid, <c>false</c> otherwise.</returns>
+	/// <param name="state">Origin state.</param>
+	/// <param name="actionID">Action to be taken on state.</param>
+	/// <param name="reward">Reward.</param>
+	/// <param name="newState">New state.</param>
+	public bool takeAction (State state, int actionID, out int reward, out State newState)
 	{
-		// Calculate new state index
-		int newStateIndex;
+		int newRow = state.m_Row;
+		int newColumn = state.m_Column;
+
+		reward = 0;
+		newState = null;
+
+		// switch through actions and check, if we're hitting a field on the board
 		switch (actionID) {
 		case ACTION_ID_GO_UP:
-			newStateIndex = stateID + m_ColumnCount;
+			{
+				newRow++;
+				if (newRow >= m_RowCount) {
+					return false;
+				}
+			}
 			break;
 		case ACTION_ID_GO_RIGHT:
 			{
-				// are we on the right-most column?
-				if (stateID % m_ColumnCount == m_ColumnCount - 1) {
+				newColumn++;
+				if (newColumn >= m_ColumnCount) {
 					return false;
 				}
-				newStateIndex = stateID + 1;
 			}
 			break;
 		case ACTION_ID_GO_DOWN:
-			newStateIndex = stateID - m_ColumnCount;
+			{
+				newRow--;
+				if (newRow < 0) {
+					return false;
+				}
+			}
 			break;
 		case ACTION_ID_GO_LEFT:
 			{
-				// are we on the left-most column?
-				if (stateID % m_ColumnCount == 0) {
+				newColumn--;
+				if (newColumn < 0) {
 					return false;
 				}
-				newStateIndex = stateID - 1;
 			}
 			break;
 		default:
 			return false;
 		}
 
+		Field newField = getField (newRow, newColumn);
 
-		// check for array out of bounds
-		if (newStateIndex > m_FieldArray.GetLength (0) - 1 || newStateIndex < 0) {
-			return false;
-		}
-
-		Field newField = m_FieldArray [newStateIndex];
 		// check, if the new Field is accessible
 		if (!newField.m_Accessible) {
 			return false;
 		}
 
+		// If Action is valid, return reward and new state
 		reward = newField.m_Reward;
-		newState = newStateIndex;
+		newState = new State (newRow, newColumn);
+
 		return true;
 	}
 		
