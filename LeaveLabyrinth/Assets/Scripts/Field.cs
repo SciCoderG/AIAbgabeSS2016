@@ -5,11 +5,11 @@
 /// </summary>
 public class Field
 {
-	public int m_Reward{ get; set; }
+	public float m_Reward{ get; set; }
 
 	public bool m_Accessible{ get; set; }
 
-	public Field (int reward, bool accessible)
+	public Field (float reward, bool accessible)
 	{
 		m_Reward = reward;
 		m_Accessible = accessible;

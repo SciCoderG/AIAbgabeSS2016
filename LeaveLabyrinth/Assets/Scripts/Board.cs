@@ -35,7 +35,7 @@ public class Board
 		// Initialize the Field Matrix
 		for (int i = 0; i < m_FieldMatrix.GetLength (0); i++) {
 			for (int j = 0; i < m_FieldMatrix.GetLength (1); j++) {
-				
+				m_FieldMatrix [i, j] = new Field (0f, true);
 			}
 		}
 	}
@@ -54,12 +54,12 @@ public class Board
 	/// <param name="actionID">Action to be taken on state.</param>
 	/// <param name="reward">Reward.</param>
 	/// <param name="newState">New state.</param>
-	public bool takeAction (State state, int actionID, out int reward, out State newState)
+	public bool takeAction (State state, int actionID, out float reward, out State newState)
 	{
 		int newRow = state.m_Row;
 		int newColumn = state.m_Column;
 
-		reward = 0;
+		reward = 0f;
 		newState = null;
 
 		// switch through actions and check, if we're hitting a field on the board
