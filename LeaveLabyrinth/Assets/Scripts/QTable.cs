@@ -64,6 +64,8 @@ public class QTable
 
 	public bool setActionQuality (uint state, int actionID, float quality)
 	{
+		m_NumberOfUpdates++;
+
 		// add the state, if it doesn't exist yet
 		bool hasState = m_DataTable.ContainsKey (state);
 		if (!hasState) {
@@ -91,7 +93,7 @@ public class QTable
 			return false; // no states to return
 		}
 		;
-		int randomStateNumber = m_Random.Next (stateCount - 1);
+		int randomStateNumber = m_Random.Next (stateCount);
 
 		int i = 0;
 		foreach (uint s in m_DataTable.Keys) {
@@ -117,7 +119,7 @@ public class QTable
 				return false; // no actions available
 			}
 
-			int randomActionNumber = m_Random.Next (actionCount - 1);
+			int randomActionNumber = m_Random.Next (actionCount);
 
 			actionID = aqList [randomActionNumber].m_ActionID;
 		}
@@ -171,7 +173,7 @@ public class QTable
 			}
 
 			// Get a random action out of the best qualities
-			int randomBestQualityIndex = m_Random.Next (bestQualities.Count - 1);
+			int randomBestQualityIndex = m_Random.Next (bestQualities.Count);
 			actionID = bestQualities [randomBestQualityIndex].m_ActionID;
 			quality = bestQualities [randomBestQualityIndex].m_Quality;
 		}
@@ -193,9 +195,16 @@ public class QTable
 
 	private bool findActionQuality (uint state, int actionID, out AQTuple actionQuality)
 	{
+		actionQuality = null;
+
 		List<AQTuple> aqList;
 		bool hasState = m_DataTable.TryGetValue (state, out aqList);
+
 		if (hasState) {
+			if (0 == aqList.Count) {
+				return false;
+			}
+
 			foreach (AQTuple aq in aqList) {
 				if (actionID == aq.m_ActionID) {
 					actionQuality = aq;
@@ -204,6 +213,29 @@ public class QTable
 			}
 		}
 		actionQuality = null;
-		return hasState; // didn't find state or the specified action
+		return false; // didn't find state or the specified action
+	}
+
+	public override string ToString ()
+	{
+		// init
+		ushort row, column;
+		List<AQTuple> aqList;
+
+		string toReturn = "Qtable: " + m_Name + "\n";
+		foreach (uint state in m_DataTable.Keys) {
+			StateConversion.convertFromState (state, out row, out column);
+			toReturn += "(" + row + "," + column + ") "; // print state
+
+			m_DataTable.TryGetValue (state, out aqList); // get actions
+			aqList.Sort ();
+			foreach (AQTuple aq in aqList) {
+				toReturn += aq.ToString () + " "; // print actions
+			}
+			toReturn += "\n"; // next line
+		}
+
+		toReturn += "\nNumber of Updates: " + m_NumberOfUpdates;
+		return toReturn;
 	}
 }

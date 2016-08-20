@@ -68,7 +68,7 @@ public class LearningBehaviour
 
 		// determine the best quality of the next state
 		float maxQuality;
-		m_QTable.getBestActionQuality (m_CurrentState, out maxQuality);
+		m_QTable.getBestActionQuality (newState, out maxQuality);
 
 		// calculate the new quality-value
 		quality = (1 - m_LearningRate) * quality + m_LearningRate * (reward + m_DiscountRate * maxQuality);

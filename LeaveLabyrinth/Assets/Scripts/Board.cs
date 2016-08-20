@@ -42,7 +42,7 @@ public class Board
 
 		// Initialize the Field Matrix
 		for (ushort i = 0; i < m_FieldMatrix.GetLength (0); i++) {
-			for (ushort j = 0; i < m_FieldMatrix.GetLength (1); j++) {
+			for (ushort j = 0; j < m_FieldMatrix.GetLength (1); j++) {
 				m_FieldMatrix [i, j] = new Field (0f, true);
 			}
 		}
@@ -60,7 +60,7 @@ public class Board
 		ushort randomRow = (ushort)m_Random.Next (m_RowCount);
 		ushort randomColumn = (ushort)m_Random.Next (m_ColumnCount);
 
-		return convertToState (randomRow, randomColumn);
+		return StateConversion.convertToState (randomRow, randomColumn);
 	}
 
 	public bool getRandomPossibleBoardAction (uint state, out int actionID)
@@ -69,7 +69,7 @@ public class Board
 
 		ushort row;
 		ushort column;
-		convertFromState (state, out row, out column);
+		StateConversion.convertFromState (state, out row, out column);
 
 		List<int> possibleActions = new List<int> ();
 		foreach (int action in AVAILABLE_ACTION_IDS) {
@@ -81,7 +81,7 @@ public class Board
 
 		int possibleActionCount = possibleActions.Count;
 		if (0 < possibleActionCount) {
-			int randomPossibleActionIndex = m_Random.Next (possibleActionCount - 1);
+			int randomPossibleActionIndex = m_Random.Next (possibleActionCount);
 			actionID = possibleActions [randomPossibleActionIndex];
 
 			return true;
@@ -103,8 +103,6 @@ public class Board
 		ushort newRow;
 		ushort newColumn;
 
-		convertFromState (state, out newRow, out newColumn);
-
 		reward = 0f;
 		newState = 0U;
 
@@ -123,7 +121,7 @@ public class Board
 
 		// If Action is valid, return reward and new state
 		reward = newField.m_Reward;
-		newState = convertToState (newRow, newColumn);
+		newState = StateConversion.convertToState (newRow, newColumn);
 
 		return true;
 	}
@@ -132,7 +130,7 @@ public class Board
 	{
 		ushort tryRow;
 		ushort tryColumn;
-		convertFromState (state, out tryRow, out tryColumn);
+		StateConversion.convertFromState (state, out tryRow, out tryColumn);
 
 		row = 0;
 		column = 0;
@@ -156,17 +154,19 @@ public class Board
 			break;
 		case ACTION_ID_GO_DOWN:
 			{
-				tryRow--;
-				if (tryRow < 0) {
+				if (tryRow == 0) {
 					return false;
+				} else {
+					tryRow--;
 				}
 			}
 			break;
 		case ACTION_ID_GO_LEFT:
 			{
-				tryColumn--;
-				if (tryColumn < 0) {
+				if (tryColumn == 0) {
 					return false;
+				} else {
+					tryColumn--;
 				}
 			}
 			break;
@@ -180,28 +180,4 @@ public class Board
 
 		return true;
 	}
-
-	public uint convertToState (ushort row, ushort column)
-	{
-		byte[] rowBytes = BitConverter.GetBytes (row);
-		byte[] columnBytes = BitConverter.GetBytes (column);
-
-		byte[] stateBytes = new byte[4];
-		stateBytes [0] = rowBytes [0];
-		stateBytes [1] = rowBytes [1];
-		stateBytes [2] = columnBytes [0];
-		stateBytes [3] = columnBytes [1];
-		uint convertedState = BitConverter.ToUInt32 (stateBytes, 0);
-
-		return convertedState;
-	}
-
-	public void convertFromState (uint state, out ushort row, out ushort column)
-	{
-		byte[] stateBytes = BitConverter.GetBytes (state);
-
-		row = BitConverter.ToUInt16 (stateBytes, 0);
-		column = BitConverter.ToUInt16 (stateBytes, 2);
-	}
-		
 }
