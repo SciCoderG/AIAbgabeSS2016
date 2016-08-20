@@ -4,7 +4,7 @@ using System;
 
 public class QTable
 {
-	public Dictionary<State , List<ActionQuality>> m_DataTable{ get; private set; }
+	public Dictionary<uint , List<AQTuple>> m_DataTable{ get; private set; }
 
 	public int m_NumberOfUpdates{ get; private set; }
 
@@ -12,46 +12,48 @@ public class QTable
 
 	private Random m_Random;
 
+	private const float EPSILON = 0.00001f;
+
 	public QTable (string name)
 	{
-		m_DataTable = new Dictionary<State,List<ActionQuality>> ();
+		m_DataTable = new Dictionary<uint,List<AQTuple>> ();
 		m_Name = name;
 
 		m_Random = new Random ();
 	}
 
 
-	public bool addState (State state)
+	public bool addState (uint state)
 	{
 		try {
-			m_DataTable.Add (state, new List<ActionQuality> ());
+			m_DataTable.Add (state, new List<AQTuple> ());
 			return true;
 		} catch (ArgumentException) {
 			return false;
 		}
 	}
 
-	public bool addAction (State State, int actionID)
+	public bool addAction (uint state, int actionID)
 	{
-		return addAction (State, actionID, 0);
+		return addAction (state, actionID, 0);
 	}
 
-	public bool addAction (State state, int actionID, float quality)
+	public bool addAction (uint state, int actionID, float quality)
 	{
-		List<ActionQuality> aqList;
+		List<AQTuple> aqList;
 		bool hasState = m_DataTable.TryGetValue (state, out aqList);
 		if (hasState) {
 			if (!containsAction (actionID, aqList)) {
-				aqList.Add (new ActionQuality (actionID, quality));
+				aqList.Add (new AQTuple (actionID, quality));
 			}
 		}
 		return hasState;
 	}
 
-	public bool getActionQuality (State State, int actionID, out float quality)
+	public bool getActionQuality (uint state, int actionID, out float quality)
 	{
-		ActionQuality aq;
-		bool foundAction = findActionQuality (State, actionID, out aq);
+		AQTuple aq;
+		bool foundAction = findActionQuality (state, actionID, out aq);
 		if (foundAction) {
 			quality = aq.m_Quality;
 		} else {
@@ -60,19 +62,29 @@ public class QTable
 		return foundAction;
 	}
 
-	public bool setActionQuality (State state, int actionID, float quality)
+	public bool setActionQuality (uint state, int actionID, float quality)
 	{
-		ActionQuality aq;
-		bool foundActionInState = findActionQuality (state, actionID, out aq);
-		if (foundActionInState) {
-			aq.m_Quality = quality;
+		// add the state, if it doesn't exist yet
+		bool hasState = m_DataTable.ContainsKey (state);
+		if (!hasState) {
+			addState (state);
 		}
-		return foundActionInState;
+
+		AQTuple aq;
+		bool ableToSetAQ = findActionQuality (state, actionID, out aq);
+		// Action was already added to state
+		if (ableToSetAQ) {
+			aq.m_Quality = quality;
+		} else {
+			// try to add action to state
+			ableToSetAQ = addAction (state, actionID, quality);
+		}
+		return ableToSetAQ;
 	}
 
-	public bool randomState (out State state)
+	public bool randomState (out uint state)
 	{
-		state = null;
+		state = 0U;
 
 		int stateCount = m_DataTable.Count;
 		if (0 == stateCount) {
@@ -82,7 +94,7 @@ public class QTable
 		int randomStateNumber = m_Random.Next (stateCount - 1);
 
 		int i = 0;
-		foreach (State s in m_DataTable.Keys) {
+		foreach (uint s in m_DataTable.Keys) {
 			if (i == randomStateNumber) {
 				state = s;
 				break;
@@ -92,11 +104,11 @@ public class QTable
 		return true; // found a random state
 	}
 
-	public bool randomAction (State state, out int actionID)
+	public bool randomAction (uint state, out int actionID)
 	{
-		actionID = -1; // invalid actionID
+		actionID = -1; // init with invalid actionID
 
-		List<ActionQuality> aqList;
+		List<AQTuple> aqList;
 		bool hasState = m_DataTable.TryGetValue (state, out aqList);
 		if (hasState) {
 			int actionCount = aqList.Count;
@@ -107,31 +119,71 @@ public class QTable
 
 			int randomActionNumber = m_Random.Next (actionCount - 1);
 
-			int i = 0;
-			foreach (ActionQuality aq in aqList) {
-				if (i == randomActionNumber) {
-					actionID = aq.m_ActionID;
-					break;
-				}
-				i++;
-			}
-			return false; // for some reason we did not find an action in the random range. shouldn't happen...
+			actionID = aqList [randomActionNumber].m_ActionID;
 		}
 		return hasState;
 	}
 
-	public bool bestAction (State State, out int actionID)
+	public bool getBestAction (uint state, out int actionID)
 	{
-		// TODO
+		float unusedQuality;
+		return getBestAction (state, out actionID, out unusedQuality);
+	}
 
+	public bool getBestActionQuality (uint state, out float quality)
+	{
+		int unusedActionID;
+		return getBestAction (state, out unusedActionID, out quality);
+	}
+
+	public bool getBestAction (uint state, out int actionID, out float quality)
+	{
+		// init with invalid values
+		actionID = -1;
+		quality = -2f;
+
+		List<AQTuple> aqList;
+		bool hasState = m_DataTable.TryGetValue (state, out aqList);
+		if (hasState) {
+			int actionCount = aqList.Count;
+
+			if (0 == actionCount) {
+				return false; // no actions available
+			}
+				
+			// Get all the AQ Tuples with the best quality
+			List<AQTuple> bestQualities = new List<AQTuple> ();
+			bestQualities.Add (aqList [0]);
+
+			foreach (AQTuple aq in aqList) {
+				// if we found a better quality, clear the current best qualities and add the new best
+				if (aq.m_Quality > bestQualities [0].m_Quality) {
+					bestQualities.Clear ();
+					bestQualities.Add (aq);
+				} 
+				// if we found an equal good quality, add it to the list
+				else {
+					float aqDiff = (aq.m_Quality - bestQualities [0].m_Quality);
+					if (aqDiff < EPSILON && aqDiff > -EPSILON) {
+						bestQualities.Add (aq);
+					}
+				}
+			}
+
+			// Get a random action out of the best qualities
+			int randomBestQualityIndex = m_Random.Next (bestQualities.Count - 1);
+			actionID = bestQualities [randomBestQualityIndex].m_ActionID;
+			quality = bestQualities [randomBestQualityIndex].m_Quality;
+		}
+		return hasState;
 	}
 
 
 	/** >>> Private convenience-methods <<<  */
 
-	private bool containsAction (int actionID, List<ActionQuality> aqList)
+	private bool containsAction (int actionID, List<AQTuple> aqList)
 	{
-		foreach (ActionQuality aq in aqList) {
+		foreach (AQTuple aq in aqList) {
 			if (actionID == aq.m_ActionID) {
 				return true;
 			}
@@ -139,12 +191,12 @@ public class QTable
 		return false;
 	}
 
-	private bool findActionQuality (State state, int actionID, out ActionQuality actionQuality)
+	private bool findActionQuality (uint state, int actionID, out AQTuple actionQuality)
 	{
-		List<ActionQuality> aqList;
+		List<AQTuple> aqList;
 		bool hasState = m_DataTable.TryGetValue (state, out aqList);
 		if (hasState) {
-			foreach (ActionQuality aq in aqList) {
+			foreach (AQTuple aq in aqList) {
 				if (actionID == aq.m_ActionID) {
 					actionQuality = aq;
 					return true; // found action with specified id
