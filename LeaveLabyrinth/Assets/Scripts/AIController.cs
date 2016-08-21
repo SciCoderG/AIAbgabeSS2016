@@ -9,19 +9,22 @@ public class AIController : MonoBehaviour
 
 	public Text scrollView;
 
-	public Board board;
+	public GameObject m_Board;
 
 	private LearningBehaviour m_LearningBehaviour;
 
 	public AIController ()
 	{
-		m_LearningBehaviour = new LearningBehaviour (board);
+
+
 	}
 
 	// Use this for initialization
 	void Start ()
 	{
-	
+		Board board = m_Board.GetComponent<Board> ();
+
+		m_LearningBehaviour = new LearningBehaviour (board);
 	}
 	
 	// Update is called once per frame

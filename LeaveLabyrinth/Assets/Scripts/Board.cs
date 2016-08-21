@@ -27,9 +27,20 @@ public class Board : MonoBehaviour, QActionInterface
 
 	public Board ()
 	{
+		m_ExistingFields = new List<Field> ();
 		m_Random = new System.Random ();
 
-		m_CurrentField = new Field (0, true);
+	}
+
+	void Start ()
+	{
+		m_CurrentField = GameObject.CreatePrimitive (PrimitiveType.Cube).AddComponent<Field> ();
+		Field temp = GameObject.CreatePrimitive (PrimitiveType.Cube).AddComponent<Field> ();
+		temp.transform.position = new Vector3 (-1f, 0f, 0f);
+		temp.registerNeighbour (m_CurrentField, ACTION_ID_GO_LEFT);
+		m_ExistingFields.Add (temp);
+
+		m_CurrentField.registerNeighbour (temp, ACTION_ID_GO_RIGHT);
 		m_ExistingFields.Add (m_CurrentField);
 	}
 
@@ -38,7 +49,7 @@ public class Board : MonoBehaviour, QActionInterface
 		Collider[] hits = Physics.OverlapSphere (new Vector3 (x, 0, z), 0.4f);
 		foreach (Collider hit in hits) {
 			Field field = hit.gameObject.GetComponent<Field> ();
-			if (field) {
+			if (null != field) {
 				return field;
 			}
 		}
@@ -84,7 +95,7 @@ public class Board : MonoBehaviour, QActionInterface
 
 		List<int> possibleActions = new List<int> ();
 		foreach (int action in AVAILABLE_ACTION_IDS) {
-			if (correspondingField.getNeighbour (action)) {
+			if (null != correspondingField.getNeighbour (action)) {
 				possibleActions.Add (action);
 			}
 		}
@@ -107,7 +118,7 @@ public class Board : MonoBehaviour, QActionInterface
 		newState = 0U;
 
 		Field newField = getFieldFromState (state).getNeighbour (actionID);
-		if (!newField) {
+		if (null == newField) {
 			return false;
 		}
 			

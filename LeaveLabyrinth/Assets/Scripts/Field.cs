@@ -13,16 +13,15 @@ public class Field : MonoBehaviour
 
 	public Field[] m_Neighbours{ get; private set; }
 
-	private GameObject m_Cube;
+	public Field () : this (0, true)
+	{
+		
+	}
 
 	public Field (float reward, bool accessible)
 	{
 		m_Reward = reward;
 		m_Accessible = accessible;
-
-		m_Cube = GameObject.CreatePrimitive (PrimitiveType.Cube);
-		m_Cube.transform.SetParent (this.transform);
-		m_Cube.name = "FieldMesh";
 
 		m_Neighbours = new Field[Board.AVAILABLE_ACTION_IDS.Length];
 	}
