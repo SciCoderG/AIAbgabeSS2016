@@ -50,17 +50,23 @@ public class LearningBehaviour
 			m_CurrentState = m_Board.getRandomBoardState (); // start again from a random state
 		}
 
-		double doRandomAction = m_Random.NextDouble ();
-		if (doRandomAction < m_RandomAction) {
-			m_Board.getRandomPossibleBoardAction (m_CurrentState, out currentAction); // take a random action
-		} else {
-			m_QTable.getBestAction (m_CurrentState, out currentAction); // take the best action
-		}
+
+		bool actionSuccessfull;
 
 		float reward;
 		uint newState;
-		// determine the new state and reward from the board
-		m_Board.takeAction (m_CurrentState, currentAction, out reward, out newState);
+
+		do {
+			double doRandomAction = m_Random.NextDouble ();
+			if (doRandomAction < m_RandomAction) {
+				m_Board.getRandomPossibleBoardAction (m_CurrentState, out currentAction); // take a random action
+			} else {
+				m_QTable.getBestAction (m_CurrentState, out currentAction); // take the best action
+			}
+			// determine the new state and reward from the board
+			actionSuccessfull = m_Board.takeAction (m_CurrentState, currentAction, out reward, out newState);
+		} while(!actionSuccessfull);
+			
 
 		// determine the quality of the current state from the table
 		float quality;
@@ -72,7 +78,7 @@ public class LearningBehaviour
 
 		// calculate the new quality-value
 		quality = (1 - m_LearningRate) * quality + m_LearningRate * (reward + m_DiscountRate * maxQuality);
-
+			
 		// store the new quality value;
 		m_QTable.setActionQuality (m_CurrentState, currentAction, quality);
 

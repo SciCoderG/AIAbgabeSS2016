@@ -7,6 +7,8 @@ public class AIController : MonoBehaviour
 {
 	public InputField m_NumIterationInput;
 
+	public Text scrollView;
+
 	private LearningBehaviour m_LearningBehaviour;
 
 	public AIController ()

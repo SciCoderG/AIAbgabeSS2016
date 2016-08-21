@@ -140,9 +140,9 @@ public class QTable
 
 	public bool getBestAction (uint state, out int actionID, out float quality)
 	{
-		// init with invalid values
-		actionID = -1;
-		quality = -2f;
+		
+		actionID = -1; // init with invalid value
+		quality = 0f; // return quality 0, if we don't find a best action
 
 		List<AQTuple> aqList;
 		bool hasState = m_DataTable.TryGetValue (state, out aqList);
