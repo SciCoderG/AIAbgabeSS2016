@@ -9,11 +9,13 @@ public class AIController : MonoBehaviour
 
 	public Text scrollView;
 
+	public Board board;
+
 	private LearningBehaviour m_LearningBehaviour;
 
 	public AIController ()
 	{
-		m_LearningBehaviour = new LearningBehaviour ();
+		m_LearningBehaviour = new LearningBehaviour (board);
 	}
 
 	// Use this for initialization
@@ -40,6 +42,6 @@ public class AIController : MonoBehaviour
 			Debug.Log ("AIController: Couldn't parse NumIteration-Input.");
 		}
 		Debug.Log (Application.persistentDataPath);
-		File.WriteAllText (Application.persistentDataPath + "/printedQTable.txt", m_LearningBehaviour.m_QTable.ToString ());
+		File.WriteAllText (Application.dataPath + "/QTableOutput/printedQTable.txt", m_LearningBehaviour.m_QTable.ToString ());
 	}
 }

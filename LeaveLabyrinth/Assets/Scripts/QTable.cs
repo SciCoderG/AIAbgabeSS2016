@@ -219,7 +219,7 @@ public class QTable
 	public override string ToString ()
 	{
 		// init
-		ushort row, column;
+		short row, column;
 		List<AQTuple> aqList;
 
 		string toReturn = "Qtable: " + m_Name + "\n";

@@ -13,17 +13,17 @@ public class LearningBehaviour
 
 	public QTable m_QTable{ get; private set; }
 
-	public Board m_Board{ get; private set; }
+	public QActionInterface m_QActionInterface{ get; private set; }
 
 	private Random m_Random;
 
 	private uint m_CurrentState;
 
-	public LearningBehaviour ()
+	public LearningBehaviour (QActionInterface qActionInterface)
 	{
 		m_QTable = new QTable ("first");
-		m_Board = new Board ();
-		m_CurrentState = m_Board.getRandomBoardState ();
+		m_QActionInterface = qActionInterface;
+		m_CurrentState = qActionInterface.getRandomState ();
 
 		m_LearningRate = 0.6f;
 		m_DiscountRate = 0.5f;
@@ -47,7 +47,7 @@ public class LearningBehaviour
 
 		double doRandomState = m_Random.NextDouble ();
 		if (doRandomState < m_RandomState) {
-			m_CurrentState = m_Board.getRandomBoardState (); // start again from a random state
+			m_CurrentState = m_QActionInterface.getRandomState (); // start again from a random state
 		}
 
 
@@ -59,12 +59,12 @@ public class LearningBehaviour
 		do {
 			double doRandomAction = m_Random.NextDouble ();
 			if (doRandomAction < m_RandomAction) {
-				m_Board.getRandomPossibleBoardAction (m_CurrentState, out currentAction); // take a random action
+				m_QActionInterface.getRandomPossibleAction (m_CurrentState, out currentAction); // take a random action
 			} else {
 				m_QTable.getBestAction (m_CurrentState, out currentAction); // take the best action
 			}
 			// determine the new state and reward from the board
-			actionSuccessfull = m_Board.takeAction (m_CurrentState, currentAction, out reward, out newState);
+			actionSuccessfull = m_QActionInterface.takeAction (m_CurrentState, currentAction, out reward, out newState);
 		} while(!actionSuccessfull);
 			
 

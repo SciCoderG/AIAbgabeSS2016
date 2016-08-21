@@ -3,10 +3,10 @@ using System;
 
 public class StateConversion
 {
-	public static uint convertToState (ushort row, ushort column)
+	public static uint convertToState (short posX, short posZ)
 	{
-		byte[] rowBytes = BitConverter.GetBytes (row);
-		byte[] columnBytes = BitConverter.GetBytes (column);
+		byte[] rowBytes = BitConverter.GetBytes (posX);
+		byte[] columnBytes = BitConverter.GetBytes (posZ);
 
 		byte[] stateBytes = new byte[4];
 		stateBytes [0] = rowBytes [0];
@@ -18,11 +18,11 @@ public class StateConversion
 		return convertedState;
 	}
 
-	public static void convertFromState (uint state, out ushort row, out ushort column)
+	public static void convertFromState (uint state, out short posX, out short posZ)
 	{
 		byte[] stateBytes = BitConverter.GetBytes (state);
 
-		row = BitConverter.ToUInt16 (stateBytes, 0);
-		column = BitConverter.ToUInt16 (stateBytes, 2);
+		posX = BitConverter.ToInt16 (stateBytes, 0);
+		posZ = BitConverter.ToInt16 (stateBytes, 2);
 	}
 }

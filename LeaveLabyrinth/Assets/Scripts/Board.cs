@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Board
+public class Board : MonoBehaviour, QActionInterface
 {
-
-
-	private Field[,] m_FieldMatrix;
-	private ushort m_RowCount, m_ColumnCount;
+	private List<Field> m_ExistingFields;
 
 	// ActionIDs
 	public const int ACTION_ID_GO_UP = 0;
@@ -22,59 +20,71 @@ public class Board
 		ACTION_ID_GO_LEFT
 	};
 
-	private Random m_Random;
+	private System.Random m_Random;
 
-	public Board () : this (3, 4)
+	// solely used to speed up everything - we can now use the neighbour references instead of having to raycast neighbours
+	public Field m_CurrentField{ get; set; }
+
+	public Board ()
 	{
-		m_FieldMatrix [0, 3].m_Reward = -1f;
-		m_FieldMatrix [1, 1].m_Accessible = false;
-		m_FieldMatrix [2, 3].m_Reward = 1f;
+		m_Random = new System.Random ();
+
+		m_CurrentField = new Field (0, true);
+		m_ExistingFields.Add (m_CurrentField);
 	}
 
-	public Board (ushort rows, ushort columns)
+	public Field getFieldAtPosition (short x, short z)
 	{
-		m_Random = new Random ();
-
-		m_RowCount = rows;
-		m_ColumnCount = columns;
-
-		m_FieldMatrix = new Field[rows, columns];
-
-		// Initialize the Field Matrix
-		for (ushort i = 0; i < m_FieldMatrix.GetLength (0); i++) {
-			for (ushort j = 0; j < m_FieldMatrix.GetLength (1); j++) {
-				m_FieldMatrix [i, j] = new Field (0f, true);
+		Collider[] hits = Physics.OverlapSphere (new Vector3 (x, 0, z), 0.4f);
+		foreach (Collider hit in hits) {
+			Field field = hit.gameObject.GetComponent<Field> ();
+			if (field) {
+				return field;
 			}
 		}
-
-
+		return null;
 	}
 
-	public Field getField (ushort row, ushort column)
+	public Field getFieldFromState (uint state)
 	{
-		return m_FieldMatrix [row, column];
+		short posX;
+		short posZ;
+		StateConversion.convertFromState (state, out posX, out posZ);
+
+		return getFieldAtPosition (posX, posZ);
 	}
 
-	public uint getRandomBoardState ()
+	public uint getStateFromField (Field field)
 	{
-		ushort randomRow = (ushort)m_Random.Next (m_RowCount);
-		ushort randomColumn = (ushort)m_Random.Next (m_ColumnCount);
+		short posX = (short)field.transform.position.x;
+		short posZ = (short)field.transform.position.z;
 
-		return StateConversion.convertToState (randomRow, randomColumn);
+		return StateConversion.convertToState (posX, posZ);
 	}
 
-	public bool getRandomPossibleBoardAction (uint state, out int actionID)
+
+
+
+	/** 			>>> 	QActionInterface - Implementation 	<<< 				*/
+
+	public uint getRandomState ()
+	{
+		int randomIndex = m_Random.Next (m_ExistingFields.Count);
+
+		Field randomField = m_ExistingFields [randomIndex];
+
+		return getStateFromField (randomField);
+	}
+
+	public bool getRandomPossibleAction (uint state, out int actionID)
 	{
 		actionID = -1;
 
-		ushort row;
-		ushort column;
-		StateConversion.convertFromState (state, out row, out column);
+		Field correspondingField = getFieldFromState (state);
 
 		List<int> possibleActions = new List<int> ();
 		foreach (int action in AVAILABLE_ACTION_IDS) {
-			// check if action is possible
-			if (tryAction (state, action, out row, out column)) {
+			if (correspondingField.getNeighbour (action)) {
 				possibleActions.Add (action);
 			}
 		}
@@ -86,97 +96,23 @@ public class Board
 
 			return true;
 		} 
-
 		return false;
 	}
 
-	/// <summary>
-	/// Validate the action. If valid, returns the reward for the action and the new state we're in
-	/// </summary>
-	/// <returns><c>true</c>, if action was valid, <c>false</c> otherwise.</returns>
-	/// <param name="state">Origin state.</param>
-	/// <param name="actionID">Action to be taken on state.</param>
-	/// <param name="reward">Reward.</param>
-	/// <param name="newState">New state.</param>
+
+
 	public bool takeAction (uint state, int actionID, out float reward, out uint newState)
 	{
-		ushort newRow;
-		ushort newColumn;
-
 		reward = 0f;
 		newState = 0U;
 
-		// switch through actions and check, if we're hitting a field on the board
-		bool actionWasValid = tryAction (state, actionID, out newRow, out newColumn);
-		if (!actionWasValid) {
+		Field newField = getFieldFromState (state).getNeighbour (actionID);
+		if (!newField) {
 			return false;
 		}
-
-		Field newField = getField (newRow, newColumn);
-
-		// check, if the new Field is accessible
-		if (!newField.m_Accessible) {
-			return false;
-		}
-
-		// If Action is valid, return reward and new state
+			
 		reward = newField.m_Reward;
-		newState = StateConversion.convertToState (newRow, newColumn);
-
-		return true;
-	}
-
-	private bool tryAction (uint state, int actionID, out ushort row, out ushort column)
-	{
-		ushort tryRow;
-		ushort tryColumn;
-		StateConversion.convertFromState (state, out tryRow, out tryColumn);
-
-		row = 0;
-		column = 0;
-
-		switch (actionID) {
-		case ACTION_ID_GO_UP:
-			{
-				tryRow++;
-				if (tryRow >= m_RowCount) {
-					return false;
-				}
-			}
-			break;
-		case ACTION_ID_GO_RIGHT:
-			{
-				tryColumn++;
-				if (tryColumn >= m_ColumnCount) {
-					return false;
-				}
-			}
-			break;
-		case ACTION_ID_GO_DOWN:
-			{
-				if (tryRow == 0) {
-					return false;
-				} else {
-					tryRow--;
-				}
-			}
-			break;
-		case ACTION_ID_GO_LEFT:
-			{
-				if (tryColumn == 0) {
-					return false;
-				} else {
-					tryColumn--;
-				}
-			}
-			break;
-		default:
-			return false;
-		}
-
-		// if action was ok, set our values to the new values
-		row = tryRow;
-		column = tryColumn;
+		newState = getStateFromField (newField);
 
 		return true;
 	}
