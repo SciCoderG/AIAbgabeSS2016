@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : MonoBehaviour, QActionInterface
+public class Board : QActionInterface
 {
-	private List<Field> m_ExistingFields;
+	public List<Field> m_ExistingFields{ get; set; }
 
 	// ActionIDs
 	public const int ACTION_ID_GO_UP = 0;
@@ -30,10 +30,6 @@ public class Board : MonoBehaviour, QActionInterface
 		m_ExistingFields = new List<Field> ();
 		m_Random = new System.Random ();
 
-	}
-
-	void Start ()
-	{
 		m_CurrentField = GameObject.CreatePrimitive (PrimitiveType.Cube).AddComponent<Field> ();
 		Field temp = GameObject.CreatePrimitive (PrimitiveType.Cube).AddComponent<Field> ();
 		temp.transform.position = new Vector3 (-1f, 0f, 0f);
@@ -73,13 +69,13 @@ public class Board : MonoBehaviour, QActionInterface
 		return StateConversion.convertToState (posX, posZ);
 	}
 
-
-
-
-	/** 			>>> 	QActionInterface - Implementation 	<<< 				*/
+	/** 		>>> 	QActionInterface - Implementation 	<<< 			*/
 
 	public uint getRandomState ()
 	{
+		if (m_ExistingFields.Count <= 0) {
+			return 0;
+		}
 		int randomIndex = m_Random.Next (m_ExistingFields.Count);
 
 		Field randomField = m_ExistingFields [randomIndex];
@@ -110,8 +106,6 @@ public class Board : MonoBehaviour, QActionInterface
 		return false;
 	}
 
-
-
 	public bool takeAction (uint state, int actionID, out float reward, out uint newState)
 	{
 		reward = 0f;
@@ -127,4 +121,51 @@ public class Board : MonoBehaviour, QActionInterface
 
 		return true;
 	}
+
+
+	/** 	>>> Save and Load implementation <<< 	*/
+
+	public void save (string boardName)
+	{
+		BoardSave bs = new BoardSave ();
+		bs.m_CurrentFieldIndex = m_ExistingFields.IndexOf (m_CurrentField);
+
+		// Save all fields as FieldSave
+		foreach (Field field in m_ExistingFields) {
+			FieldSave fs = new FieldSave ();
+			fs.m_PosX = field.transform.position.x;
+			fs.m_PosZ = field.transform.position.z;
+			fs.m_Accessible = field.m_Accessible;
+			fs.m_Reward = field.m_Reward;
+			bs.m_FieldSaves.Add (fs);
+		}
+		// Save BoardSave as a File
+		SaveLoadManager.SaveBoard (bs, boardName);
+	}
+
+	public void load (string boardName)
+	{
+		BoardSave bs = SaveLoadManager.LoadBoard (boardName);
+
+		if (null == bs) {
+			Debug.Log ("Board.load(" + boardName + "): Couldn't load BoardSave.");
+			return;
+		}
+		foreach (FieldSave fs in bs.m_FieldSaves) {
+			GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/FieldPrefab", typeof(GameObject))) as GameObject;
+			fieldObject.name = "Field";
+			Field field = fieldObject.GetComponent<Field> ();
+			field.m_Accessible = fs.m_Accessible;
+			field.m_Reward = fs.m_Reward;
+			field.gameObject.transform.position = new Vector3 (fs.m_PosX, 0f, fs.m_PosZ);
+
+			// TODO
+			// field.findNeighbours();
+
+			m_ExistingFields.Add (field);
+		}
+		m_CurrentField = m_ExistingFields [bs.m_CurrentFieldIndex];
+	}
+
+
 }

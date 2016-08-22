@@ -11,9 +11,9 @@ public class LearningBehaviour
 
 	public float m_RandomState{ get; set; }
 
-	public QTable m_QTable{ get; private set; }
+	public QTable m_QTable{ get; set; }
 
-	public QActionInterface m_QActionInterface{ get; private set; }
+	public QActionInterface m_QActionInterface{ get; set; }
 
 	private Random m_Random;
 
@@ -21,9 +21,13 @@ public class LearningBehaviour
 
 	public LearningBehaviour (QActionInterface qActionInterface)
 	{
-		m_QTable = new QTable ("first");
 		m_QActionInterface = qActionInterface;
-		m_CurrentState = qActionInterface.getRandomState ();
+	}
+
+	public void init ()
+	{
+		m_QTable = new QTable ("first");
+		m_CurrentState = m_QActionInterface.getRandomState ();
 
 		m_LearningRate = 0.6f;
 		m_DiscountRate = 0.5f;

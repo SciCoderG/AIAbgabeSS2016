@@ -9,7 +9,8 @@ public class AIController : MonoBehaviour
 
 	public Text scrollView;
 
-	public GameObject m_Board;
+	private Board m_CurrentBoard;
+
 
 	private LearningBehaviour m_LearningBehaviour;
 
@@ -22,9 +23,10 @@ public class AIController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		Board board = m_Board.GetComponent<Board> ();
+		m_CurrentBoard = new Board ();
 
-		m_LearningBehaviour = new LearningBehaviour (board);
+		m_LearningBehaviour = new LearningBehaviour (m_CurrentBoard);
+		m_LearningBehaviour.init ();
 	}
 	
 	// Update is called once per frame
@@ -46,5 +48,23 @@ public class AIController : MonoBehaviour
 		}
 		Debug.Log (Application.persistentDataPath);
 		File.WriteAllText (Application.dataPath + "/QTableOutput/printedQTable.txt", m_LearningBehaviour.m_QTable.ToString ());
+	}
+
+	public void onSaveBoard ()
+	{
+		m_CurrentBoard.save ("test1");
+	}
+
+	public void onLoadBoard ()
+	{
+		m_CurrentBoard.load ("test1");
+	}
+
+	public void onChangeBoard ()
+	{
+		GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/FieldPrefab", typeof(GameObject))) as GameObject;
+		Field field = fieldObject.GetComponent<Field> ();
+		fieldObject.transform.position = new Vector3 (1f, 0f, 0f);
+		m_CurrentBoard.m_ExistingFields.Add (field);
 	}
 }
