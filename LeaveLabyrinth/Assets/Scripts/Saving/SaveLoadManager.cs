@@ -27,24 +27,4 @@ public static class SaveLoadManager
 		}
 		return null;
 	}
-
-	public static void SaveField (Field toSave)
-	{
-		BinaryFormatter bf = new BinaryFormatter ();
-		FileStream file = File.Create (Application.persistentDataPath + "/savedField.test");
-		bf.Serialize (file, toSave);
-		file.Close ();
-	}
-
-	public static Field LoadField ()
-	{
-		if (File.Exists (Application.persistentDataPath + "/savedField.test")) {
-			BinaryFormatter bf = new BinaryFormatter ();
-			FileStream file = File.Open (Application.persistentDataPath + "savedField.test", FileMode.Open);
-			Field toLoad = (Field)bf.Deserialize (file);
-			file.Close ();
-			return toLoad;
-		}
-		return null;
-	}
 }

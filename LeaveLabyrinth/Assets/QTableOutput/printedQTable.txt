@@ -1,5 +1,6 @@
 Qtable: first
-(0,0) A:1, Q:0.000 
-(-1,0) A:3, Q:0.000 
+(-1,0) A:1, Q:0.000 
+(0,0) A:1, Q:0.000 A:3, Q:0.000 
+(1,0) A:3, Q:0.000 
 
-Number of Updates: 100
+Number of Updates: 1000

@@ -8,16 +8,23 @@ public class Board : QActionInterface
 	public List<Field> m_ExistingFields{ get; set; }
 
 	// ActionIDs
-	public const int ACTION_ID_GO_UP = 0;
+	public const int ACTION_ID_GO_FORWARD = 0;
 	public const int ACTION_ID_GO_RIGHT = 1;
-	public const int ACTION_ID_GO_DOWN = 2;
+	public const int ACTION_ID_GO_BACKWARD = 2;
 	public const int ACTION_ID_GO_LEFT = 3;
 
 	public static readonly int[] AVAILABLE_ACTION_IDS = {
-		ACTION_ID_GO_UP,
+		ACTION_ID_GO_FORWARD,
 		ACTION_ID_GO_RIGHT,
-		ACTION_ID_GO_DOWN,
+		ACTION_ID_GO_BACKWARD,
 		ACTION_ID_GO_LEFT
+	};
+
+	public static readonly Vector3[] AVAILABLE_ACTION_DIRECTIONS = {
+		new Vector3 (0f, 0f, 1f), // forward
+		new Vector3 (1f, 0f, 0f), // right
+		new Vector3 (0f, 0f, -1f), // backward
+		new Vector3 (-1f, 0f, 0f) // left
 	};
 
 	private System.Random m_Random;
@@ -67,6 +74,23 @@ public class Board : QActionInterface
 		short posZ = (short)field.transform.position.z;
 
 		return StateConversion.convertToState (posX, posZ);
+	}
+
+	public Field[] findNeighbours (Field field)
+	{
+		Field[] neighbours = new Field[4];
+		RaycastHit hit;
+		// dis some crazy shit. we're just going through all actions, getting corresponding directions,
+		// raycasting in that direction and if we're hitting a field --> putting it into the return array
+		foreach (int actionID in AVAILABLE_ACTION_IDS) {
+			if (Physics.Raycast (field.transform.position, AVAILABLE_ACTION_DIRECTIONS [actionID], out hit, 1f)) {
+				Field fieldHit = hit.collider.gameObject.GetComponent<Field> ();
+				if (null != fieldHit) {
+					neighbours [actionID] = fieldHit;
+				}
+			} 
+		}
+		return neighbours;
 	}
 
 	/** 		>>> 	QActionInterface - Implementation 	<<< 			*/
@@ -145,6 +169,10 @@ public class Board : QActionInterface
 
 	public void load (string boardName)
 	{
+		foreach (Field field in m_ExistingFields) {
+			GameObject.Destroy (field.gameObject);
+		}
+
 		BoardSave bs = SaveLoadManager.LoadBoard (boardName);
 
 		if (null == bs) {
@@ -159,8 +187,7 @@ public class Board : QActionInterface
 			field.m_Reward = fs.m_Reward;
 			field.gameObject.transform.position = new Vector3 (fs.m_PosX, 0f, fs.m_PosZ);
 
-			// TODO
-			// field.findNeighbours();
+			field.m_Neighbours = findNeighbours (field);
 
 			m_ExistingFields.Add (field);
 		}

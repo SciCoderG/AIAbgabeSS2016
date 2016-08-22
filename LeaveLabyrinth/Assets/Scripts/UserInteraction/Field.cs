@@ -11,7 +11,7 @@ public class Field : MonoBehaviour
 
 	public bool m_Accessible{ get; set; }
 
-	public Field[] m_Neighbours{ get; private set; }
+	public Field[] m_Neighbours{ get; set; }
 
 	public Field () : this (0, true)
 	{
@@ -39,12 +39,13 @@ public class Field : MonoBehaviour
 	public bool registerNeighbour (Field newNeighbour, int actionID)
 	{
 		try {
+			// register neighbour
 			m_Neighbours [actionID] = newNeighbour;
 		} catch (ArgumentOutOfRangeException e) {
 			Debug.Log (e.Message);
 			return false;
 		}
+
 		return true;
 	}
-
 }

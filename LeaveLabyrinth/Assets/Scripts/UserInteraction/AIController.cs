@@ -66,5 +66,9 @@ public class AIController : MonoBehaviour
 		Field field = fieldObject.GetComponent<Field> ();
 		fieldObject.transform.position = new Vector3 (1f, 0f, 0f);
 		m_CurrentBoard.m_ExistingFields.Add (field);
+
+		foreach (Field f in m_CurrentBoard.m_ExistingFields) {
+			f.m_Neighbours = m_CurrentBoard.findNeighbours (f);
+		}
 	}
 }
