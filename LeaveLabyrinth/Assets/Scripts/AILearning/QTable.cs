@@ -163,7 +163,7 @@ public class QTable
 					bestQualities.Clear ();
 					bestQualities.Add (aq);
 				} 
-				// if we found an equal good quality, add it to the list
+				// if we found an equally good quality, add it to the list
 				else {
 					float aqDiff = (aq.m_Quality - bestQualities [0].m_Quality);
 					if (aqDiff < EPSILON && aqDiff > -EPSILON) {

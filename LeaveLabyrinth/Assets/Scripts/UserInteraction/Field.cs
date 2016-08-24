@@ -23,7 +23,7 @@ public class Field : MonoBehaviour
 		m_Reward = reward;
 		m_Accessible = accessible;
 
-		m_Neighbours = new Field[Board.AVAILABLE_ACTION_IDS.Length];
+		m_Neighbours = new Field[FieldManager.AVAILABLE_ACTION_IDS.Length];
 	}
 
 	public Field getNeighbour (int actionID)
@@ -47,5 +47,15 @@ public class Field : MonoBehaviour
 		}
 
 		return true;
+	}
+
+	void OnMouseUpAsButton ()
+	{
+		FieldCreator.onShowPossibleFields (this);
+	}
+
+	void OnDestroy ()
+	{
+		m_Neighbours = null;
 	}
 }

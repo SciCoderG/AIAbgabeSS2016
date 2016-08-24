@@ -9,8 +9,7 @@ public class AIController : MonoBehaviour
 
 	public Text scrollView;
 
-	private Board m_CurrentBoard;
-
+	private ActionExecutor m_ActionExecutor;
 
 	private LearningBehaviour m_LearningBehaviour;
 
@@ -23,10 +22,12 @@ public class AIController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
-		m_CurrentBoard = new Board ();
+		m_ActionExecutor = new ActionExecutor ();
 
-		m_LearningBehaviour = new LearningBehaviour (m_CurrentBoard);
+		m_LearningBehaviour = new LearningBehaviour (m_ActionExecutor);
 		m_LearningBehaviour.init ();
+
+		FieldCreator.createField (0f, 0f, true, 0f);
 	}
 	
 	// Update is called once per frame
@@ -52,23 +53,17 @@ public class AIController : MonoBehaviour
 
 	public void onSaveBoard ()
 	{
-		m_CurrentBoard.save ("test1");
+		FieldManager.save ("test1");
 	}
 
 	public void onLoadBoard ()
 	{
-		m_CurrentBoard.load ("test1");
+		FieldManager.load ("test1");
 	}
 
 	public void onChangeBoard ()
 	{
-		GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/FieldPrefab", typeof(GameObject))) as GameObject;
-		Field field = fieldObject.GetComponent<Field> ();
-		fieldObject.transform.position = new Vector3 (1f, 0f, 0f);
-		m_CurrentBoard.m_ExistingFields.Add (field);
-
-		foreach (Field f in m_CurrentBoard.m_ExistingFields) {
-			f.m_Neighbours = m_CurrentBoard.findNeighbours (f);
-		}
+		Field field = FieldCreator.createField (1f, 0f, true, 0f);
+		FieldManager.existingFields.Add (field);
 	}
 }
