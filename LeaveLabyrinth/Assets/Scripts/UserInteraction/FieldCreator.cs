@@ -6,6 +6,13 @@ public static class FieldCreator
 {
 	private static List<GameObject> possibleFields = new List<GameObject> ();
 
+
+	public static void onDeleteField (Field field)
+	{
+		FieldManager.existingFields.Remove (field);
+		GameObject.Destroy (field.gameObject);
+	}
+
 	public static Field createField (float posX, float posZ, bool accessible, float reward)
 	{
 		GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/FieldPrefab", typeof(GameObject))) as GameObject;

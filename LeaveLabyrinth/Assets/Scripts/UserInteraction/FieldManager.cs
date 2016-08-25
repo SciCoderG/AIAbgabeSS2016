@@ -118,6 +118,5 @@ public static class FieldManager
 
 			existingFields.Add (field);
 		}
-		//m_CurrentField = existingFields [bs.m_CurrentFieldIndex];
 	}
 }

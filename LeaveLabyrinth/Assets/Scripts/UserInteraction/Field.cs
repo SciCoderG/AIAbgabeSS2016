@@ -58,4 +58,9 @@ public class Field : MonoBehaviour
 	{
 		m_Neighbours = null;
 	}
+
+	void OnGUI ()
+	{
+		
+	}
 }
