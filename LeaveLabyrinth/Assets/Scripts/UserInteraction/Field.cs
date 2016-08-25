@@ -9,9 +9,15 @@ public class Field : MonoBehaviour
 {
 	public float m_Reward{ get; set; }
 
-	public bool m_Accessible{ get; set; }
+	public bool m_IsAccessible{ get; set; }
 
 	public Field[] m_Neighbours{ get; set; }
+
+	[SerializeField]
+	private Color m_MarkedForDeleteColor = new Color (1f, 0f, 0f);
+
+	[SerializeField]
+	private Color m_InitialColor = new Color (1f, 1f, 1f);
 
 	public Field () : this (0, true)
 	{
@@ -21,7 +27,7 @@ public class Field : MonoBehaviour
 	public Field (float reward, bool accessible)
 	{
 		m_Reward = reward;
-		m_Accessible = accessible;
+		m_IsAccessible = accessible;
 
 		m_Neighbours = new Field[FieldManager.AVAILABLE_ACTION_IDS.Length];
 	}
@@ -49,9 +55,19 @@ public class Field : MonoBehaviour
 		return true;
 	}
 
+	public void OnMarkForDelete ()
+	{
+		GetComponent<Renderer> ().material.color = m_MarkedForDeleteColor;
+	}
+
+	public void OnUnmarkForDelete ()
+	{
+		GetComponent<Renderer> ().material.color = m_InitialColor;
+	}
+
 	void OnMouseUpAsButton ()
 	{
-		FieldCreator.onShowPossibleFields (this);
+		FieldModifier.onClickField (this);
 	}
 
 	void OnDestroy ()
@@ -59,8 +75,6 @@ public class Field : MonoBehaviour
 		m_Neighbours = null;
 	}
 
-	void OnGUI ()
-	{
+
 		
-	}
 }

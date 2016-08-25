@@ -26,9 +26,7 @@ public static class FieldManager
 		new Vector3 (0f, 0f, -1f), // backward
 		new Vector3 (-1f, 0f, 0f) // left
 	};
-
-	private static System.Random random = new System.Random ();
-
+		
 	// solely used to speed up everything - we can now use the neighbour references instead of having to raycast neighbours
 	public static Field m_CurrentField{ get; set; }
 
@@ -84,14 +82,16 @@ public static class FieldManager
 	public static void save (string boardName)
 	{
 		BoardSave bs = new BoardSave ();
-		bs.m_CurrentFieldIndex = existingFields.IndexOf (m_CurrentField);
 
 		// Save all fields as FieldSave
 		foreach (Field field in existingFields) {
+			if (null == field) {
+				continue; // this happens sometimes. Perhabs Garbage Collector is too slow?
+			}
 			FieldSave fs = new FieldSave ();
 			fs.m_PosX = field.transform.position.x;
 			fs.m_PosZ = field.transform.position.z;
-			fs.m_Accessible = field.m_Accessible;
+			fs.m_Accessible = field.m_IsAccessible;
 			fs.m_Reward = field.m_Reward;
 			bs.m_FieldSaves.Add (fs);
 		}
@@ -102,6 +102,9 @@ public static class FieldManager
 	public static void load (string boardName)
 	{
 		foreach (Field field in existingFields) {
+			if (null == field) {
+				continue;
+			}
 			GameObject.Destroy (field.gameObject);
 		}
 		existingFields.Clear ();
@@ -114,7 +117,7 @@ public static class FieldManager
 		}
 		foreach (FieldSave fs in bs.m_FieldSaves) {
 			
-			Field field = FieldCreator.createField (fs.m_PosX, fs.m_PosZ, fs.m_Accessible, fs.m_Reward);
+			Field field = FieldModifier.createField (fs.m_PosX, fs.m_PosZ, fs.m_Accessible, fs.m_Reward);
 
 			existingFields.Add (field);
 		}

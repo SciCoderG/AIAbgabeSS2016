@@ -27,7 +27,7 @@ public class AIController : MonoBehaviour
 		m_LearningBehaviour = new LearningBehaviour (m_ActionExecutor);
 		m_LearningBehaviour.init ();
 
-		FieldCreator.createField (0f, 0f, true, 0f);
+		FieldModifier.createAndAddNewField (0f, 0f, true, 0f);
 	}
 	
 	// Update is called once per frame
@@ -47,23 +47,8 @@ public class AIController : MonoBehaviour
 		} else {
 			Debug.Log ("AIController: Couldn't parse NumIteration-Input.");
 		}
-		Debug.Log (Application.persistentDataPath);
 		File.WriteAllText (Application.dataPath + "/QTableOutput/printedQTable.txt", m_LearningBehaviour.m_QTable.ToString ());
 	}
 
-	public void onSaveBoard ()
-	{
-		FieldManager.save ("test1");
-	}
 
-	public void onLoadBoard ()
-	{
-		FieldManager.load ("test1");
-	}
-
-	public void onChangeBoard ()
-	{
-		Field field = FieldCreator.createField (1f, 0f, true, 0f);
-		FieldManager.existingFields.Add (field);
-	}
 }
