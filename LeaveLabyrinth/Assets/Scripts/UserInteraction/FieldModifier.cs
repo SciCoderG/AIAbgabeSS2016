@@ -12,7 +12,6 @@ public static class FieldModifier
 
 	public const int MODE_ADDING = 0;
 	public const int MODE_DELETING = 1;
-	public const int MODE_EDITING = 2;
 
 	private static Field markedForDelete = null;
 
@@ -37,18 +36,7 @@ public static class FieldModifier
 	public static void onChangeMode (int fieldModifyingMode)
 	{
 		resetVisibleElements ();
-		switch (fieldModifyingMode) {
-		case MODE_EDITING:
-			{
-				editFieldUI.gameObject.SetActive (!editFieldUI.gameObject.activeInHierarchy);
-				break;
-			}
-		default:
-			{
-				currentMode = fieldModifyingMode;
-				break;
-			}
-		}
+		currentMode = fieldModifyingMode;
 	}
 
 	public static void onClickField (Field field)

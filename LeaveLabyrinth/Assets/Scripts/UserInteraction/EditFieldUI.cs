@@ -14,7 +14,6 @@ public class EditFieldUI : MonoBehaviour
 	public EditFieldUI ()
 	{
 		FieldModifier.editFieldUI = this;
-
 	}
 
 	public void onNewFieldClicked (Field field)
