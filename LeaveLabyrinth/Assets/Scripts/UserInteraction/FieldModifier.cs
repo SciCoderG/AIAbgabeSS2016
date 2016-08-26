@@ -8,9 +8,11 @@ public static class FieldModifier
 
 	private static int currentMode = FieldModifier.MODE_ADDING;
 
+	public static EditFieldUI editFieldUI{ get; set; }
+
 	public const int MODE_ADDING = 0;
 	public const int MODE_DELETING = 1;
-	public const int MODE_VIEWING = 2;
+	public const int MODE_EDITING = 2;
 
 	private static Field markedForDelete = null;
 
@@ -28,10 +30,25 @@ public static class FieldModifier
 		GameObject.Destroy (field.gameObject);
 	}
 
+	/// <summary>
+	/// Ons the change mode.
+	/// </summary>
+	/// <param name="fieldModifyingMode">Field modifying mode.</param>
 	public static void onChangeMode (int fieldModifyingMode)
 	{
-		currentMode = fieldModifyingMode;
 		resetVisibleElements ();
+		switch (fieldModifyingMode) {
+		case MODE_EDITING:
+			{
+				editFieldUI.gameObject.SetActive (!editFieldUI.gameObject.activeInHierarchy);
+				break;
+			}
+		default:
+			{
+				currentMode = fieldModifyingMode;
+				break;
+			}
+		}
 	}
 
 	public static void onClickField (Field field)
@@ -47,16 +64,21 @@ public static class FieldModifier
 				onStartDeletingField (field);
 				break;
 			}
-		case MODE_VIEWING:
-			{
-				break;
-			}
 		default:
 			{
 				Debug.Log ("FieldModifier: Current Mode is not implemented");
 				break;
 			}
 		}
+
+		if (editFieldUI.gameObject.activeInHierarchy) {
+			editFieldUI.onNewFieldClicked (field);
+		}
+	}
+
+	public static void onApplyEditField ()
+	{
+		editFieldUI.onApplyEditField ();
 	}
 
 	public static void onStartDeletingField (Field field)

@@ -25,4 +25,14 @@ public class OnCallConnector : MonoBehaviour
 	{
 		FieldModifier.onChangeMode (FieldModifier.MODE_DELETING);
 	}
+
+	public void onSwitchEditMode ()
+	{
+		FieldModifier.onChangeMode (FieldModifier.MODE_EDITING);
+	}
+
+	public void onApplyFieldEdit ()
+	{
+		FieldModifier.onApplyEditField ();
+	}
 }
