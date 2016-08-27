@@ -180,8 +180,14 @@ public class QTable
 		return hasState;
 	}
 
+	public void reset ()
+	{
+		m_NumberOfUpdates = 0;
+		m_DataTable.Clear ();
+	}
 
-	/** >>> Private convenience-methods <<<  */
+
+	/** >>> convenience-methods <<<  */
 
 	private bool containsAction (int actionID, List<AQTuple> aqList)
 	{

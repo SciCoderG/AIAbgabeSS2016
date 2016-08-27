@@ -97,4 +97,9 @@ public class LearningBehaviour
 		// set the new state
 		m_CurrentState = newState;
 	}
+
+	public void reset ()
+	{
+		m_QTable.reset ();
+	}
 }

@@ -29,6 +29,7 @@ public static class FieldManager
 
 	public static SaveBoardUI saveBoardUI{ get; set; }
 
+	public static AIController aiController{ get; set; }
 
 	public static Field getFieldAtPosition (short x, short z)
 	{
@@ -118,6 +119,8 @@ public static class FieldManager
 
 	public static void load (string boardName)
 	{
+		aiController.reset ();
+
 		foreach (Field field in existingFields) {
 			if (null == field) {
 				continue;
