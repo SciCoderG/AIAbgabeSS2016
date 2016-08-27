@@ -23,6 +23,9 @@ public class ActionExecutor : QActionInterface
 		actionID = -1;
 
 		Field correspondingField = FieldManager.getFieldFromState (state);
+		if (null == correspondingField) {
+			return false;
+		}
 
 		List<int> possibleActions = new List<int> ();
 		foreach (int action in FieldManager.AVAILABLE_ACTION_IDS) {
