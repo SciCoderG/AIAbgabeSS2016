@@ -19,6 +19,8 @@ public class LearningBehaviour
 
 	private uint m_CurrentState;
 
+	private static readonly int MAX_ACTIONSEARCH_TRYS = 16;
+
 	public LearningBehaviour (QActionInterface qActionInterface)
 	{
 		m_QActionInterface = qActionInterface;
@@ -60,6 +62,7 @@ public class LearningBehaviour
 		float reward;
 		uint newState;
 
+		int numFindActionTries = 0;
 		do {
 			double doRandomAction = m_Random.NextDouble ();
 			if (doRandomAction < m_RandomAction) {
@@ -69,8 +72,13 @@ public class LearningBehaviour
 			}
 			// determine the new state and reward from the board
 			actionSuccessfull = m_QActionInterface.takeAction (m_CurrentState, currentAction, out reward, out newState);
-		} while(!actionSuccessfull);
-			
+			numFindActionTries++;
+		} while(!actionSuccessfull && numFindActionTries < MAX_ACTIONSEARCH_TRYS);
+
+		// Couldn't find a action, that could be done
+		if (!actionSuccessfull) {
+			return;
+		}
 
 		// determine the quality of the current state from the table
 		float quality;

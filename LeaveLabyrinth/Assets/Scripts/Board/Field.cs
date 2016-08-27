@@ -36,7 +36,7 @@ public class Field : MonoBehaviour
 	{
 		try {
 			return m_Neighbours [actionID];
-		} catch (ArgumentOutOfRangeException e) {
+		} catch (IndexOutOfRangeException e) {
 			Debug.Log (e.Message);
 			return null;
 		}
