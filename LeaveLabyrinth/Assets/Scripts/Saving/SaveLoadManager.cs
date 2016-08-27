@@ -6,18 +6,21 @@ using System.IO;
 
 public static class SaveLoadManager
 {
-	public static void SaveBoard (BoardSave toSave, string boardName)
+	private static string boardSaveDirectory = "/BoardSaves/";
+	private static string boardSaveFileEnding = ".bs";
+
+	public static void saveBoard (BoardSave toSave, string boardName)
 	{
-		string fileName = "/" + boardName + ".bs";
+		string fileName = boardSaveDirectory + boardName + boardSaveFileEnding;
 		BinaryFormatter bf = new BinaryFormatter ();
 		FileStream file = File.Create (Application.persistentDataPath + fileName);
 		bf.Serialize (file, toSave);
 		file.Close ();
 	}
 
-	public static BoardSave LoadBoard (string boardName)
+	public static BoardSave loadBoard (string boardName)
 	{
-		string fileName = "/" + boardName + ".bs";
+		string fileName = boardSaveDirectory + boardName + boardSaveFileEnding;
 		if (File.Exists (Application.persistentDataPath + fileName)) {
 			BinaryFormatter bf = new BinaryFormatter ();
 			FileStream file = File.Open (Application.persistentDataPath + fileName, FileMode.Open);
@@ -26,5 +29,27 @@ public static class SaveLoadManager
 			return toLoad;
 		}
 		return null;
+	}
+
+	public static string[] getBoardFileNames ()
+	{
+		checkDirectories ();
+		string[] boardFileNames = Directory.GetFiles (Application.persistentDataPath + boardSaveDirectory, "*" + boardSaveFileEnding);
+		for (int i = 0; i < boardFileNames.Length; i++) {
+			// truncate persistent data path beginning
+			int dataPathBeginningLength = (Application.persistentDataPath + boardSaveDirectory).Length;
+			boardFileNames [i] = boardFileNames [i].Substring (dataPathBeginningLength);
+			// truncate filename ending
+			int fileNameLength = boardFileNames [i].Length - boardSaveFileEnding.Length;
+			boardFileNames [i] = boardFileNames [i].Substring (0, fileNameLength);
+		}
+		return boardFileNames;
+	}
+
+	private static void checkDirectories ()
+	{
+		if (!Directory.Exists (Application.persistentDataPath + boardSaveDirectory)) {
+			Directory.CreateDirectory (Application.persistentDataPath + boardSaveDirectory);
+		}
 	}
 }

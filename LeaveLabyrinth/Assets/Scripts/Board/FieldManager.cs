@@ -26,9 +26,8 @@ public static class FieldManager
 		new Vector3 (0f, 0f, -1f), // backward
 		new Vector3 (-1f, 0f, 0f) // left
 	};
-		
-	// solely used to speed up everything - we can now use the neighbour references instead of having to raycast neighbours
-	public static Field m_CurrentField{ get; set; }
+
+	public static SaveBoardUI saveBoardUI{ get; set; }
 
 
 	public static Field getFieldAtPosition (short x, short z)
@@ -79,6 +78,16 @@ public static class FieldManager
 
 	/** 	>>> Save and Load implementation <<< 	*/
 
+	public static void save ()
+	{
+		String fileName = saveBoardUI.saveFileInput.text;
+		if (0 == fileName.Length) {
+			Debug.Log ("Invalid Savefile name.");
+			fileName = "default";
+		}
+		save (fileName);
+	}
+
 	public static void save (string boardName)
 	{
 		BoardSave bs = new BoardSave ();
@@ -96,7 +105,15 @@ public static class FieldManager
 			bs.m_FieldSaves.Add (fs);
 		}
 		// Save BoardSave as a File
-		SaveLoadManager.SaveBoard (bs, boardName);
+		SaveLoadManager.saveBoard (bs, boardName);
+
+		// update saveBoardUI
+		saveBoardUI.updateBoardLoadOptions ();
+	}
+
+	public static void load ()
+	{
+		load (saveBoardUI.loadFileDropdown.captionText.text);
 	}
 
 	public static void load (string boardName)
@@ -109,7 +126,7 @@ public static class FieldManager
 		}
 		existingFields.Clear ();
 
-		BoardSave bs = SaveLoadManager.LoadBoard (boardName);
+		BoardSave bs = SaveLoadManager.loadBoard (boardName);
 
 		if (null == bs) {
 			Debug.Log ("Board.load(" + boardName + "): Couldn't load BoardSave.");
