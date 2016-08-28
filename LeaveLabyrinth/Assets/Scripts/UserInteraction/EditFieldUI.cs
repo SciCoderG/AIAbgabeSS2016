@@ -24,7 +24,7 @@ public class EditFieldUI : MonoBehaviour
 	public void onNewFieldClicked (Field field, string currentState)
 	{
 		m_CurrentStateText.text = "State:\n" + currentState;
-		if (field.m_IsAccessible) {
+		if (field.M_IsAccessible) {
 			m_CurrentQualityText.text = "Quality:\n" + field.getCurrentQuality ().ToString ("0.000000");
 		} else {
 			m_CurrentQualityText.text = "Quality:\n-";
@@ -32,7 +32,7 @@ public class EditFieldUI : MonoBehaviour
 
 		m_CurrentRewardText.text = "Reward:\n" + field.M_Reward;
 		m_NewRewardField.text = "";
-		m_AccessibleToggle.isOn = field.m_IsAccessible;
+		m_AccessibleToggle.isOn = field.M_IsAccessible;
 
 		m_CurrentField = field;
 	}
@@ -65,6 +65,6 @@ public class EditFieldUI : MonoBehaviour
 		m_NewRewardField.text = "";
 
 		// get accessible
-		m_CurrentField.m_IsAccessible = m_AccessibleToggle.isOn;
+		m_CurrentField.M_IsAccessible = m_AccessibleToggle.isOn;
 	}
 }

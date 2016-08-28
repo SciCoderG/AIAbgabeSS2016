@@ -14,7 +14,8 @@ public static class FieldModifier
 	public const int MODE_DELETING = 1;
 
 	private static Field markedForDelete = null;
-	private static Field currentlySelectedField = null;
+
+	public static Field currentlySelectedField{ get; set; }
 
 	public static void updateQualityToState (QualityChangeBuffer qChangeBuffer)
 	{
@@ -145,7 +146,7 @@ public static class FieldModifier
 		fieldObject.name = "Field";
 
 		Field field = fieldObject.GetComponent<Field> ();
-		field.m_IsAccessible = accessible;
+		field.M_IsAccessible = accessible;
 		field.M_Reward = reward;
 		field.m_Neighbours = FieldManager.findNeighbours (field);
 

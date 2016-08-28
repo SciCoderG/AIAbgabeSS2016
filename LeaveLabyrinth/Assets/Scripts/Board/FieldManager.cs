@@ -101,7 +101,7 @@ public static class FieldManager
 			FieldSave fs = new FieldSave ();
 			fs.m_PosX = field.transform.position.x;
 			fs.m_PosZ = field.transform.position.z;
-			fs.m_Accessible = field.m_IsAccessible;
+			fs.m_Accessible = field.M_IsAccessible;
 			fs.m_Reward = field.M_Reward;
 			bs.m_FieldSaves.Add (fs);
 		}

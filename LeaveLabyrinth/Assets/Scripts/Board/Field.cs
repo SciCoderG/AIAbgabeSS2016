@@ -15,12 +15,22 @@ public class Field : MonoBehaviour
 			return m_Reward;
 		}
 		set {
-			updateColor (value);
 			m_Reward = value;
+			updateColor ();
 		}
 	}
 
-	public bool m_IsAccessible{ get; set; }
+	private bool m_IsAccessible = true;
+
+	public bool M_IsAccessible {
+		get {
+			return m_IsAccessible;
+		}
+		set {
+			m_IsAccessible = value;
+			updateColor ();
+		}
+	}
 
 	public Field[] m_Neighbours{ get; set; }
 
@@ -54,7 +64,7 @@ public class Field : MonoBehaviour
 	void Start ()
 	{
 		m_QualityText = gameObject.GetComponentInChildren<TextMesh> ();
-		updateColor (m_Reward);
+		updateColor ();
 	}
 
 	public Field getNeighbour (int actionID)
@@ -122,17 +132,21 @@ public class Field : MonoBehaviour
 	}
 
 
-	private void updateColor (float value)
+	private void updateColor ()
 	{
-		float colorValue = Mathf.Min (1.0f, Mathf.Abs (value));
-		// low values shouldn't be black --> map value from 0.5f to 1.f
-		colorValue = 0.3f + colorValue * 0.7f;
-		if (value > 0f) {
-			m_InitialColor = new Color (0f, colorValue, 0f);
-		} else if (value < 0f) {
-			m_InitialColor = new Color (colorValue, 0f, 0f);
+		if (m_IsAccessible) {
+			float colorValue = Mathf.Min (1.0f, Mathf.Abs (m_Reward));
+			// low values shouldn't be black --> map value from 0.5f to 1.f
+			colorValue = 0.3f + colorValue * 0.7f;
+			if (m_Reward > 0f) {
+				m_InitialColor = new Color (0f, colorValue, 0f);
+			} else if (m_Reward < 0f) {
+				m_InitialColor = new Color (colorValue, 0f, 0f);
+			} else {
+				m_InitialColor = Color.white;
+			}
 		} else {
-			m_InitialColor = Color.white;
+			m_InitialColor = Color.black;
 		}
 		GetComponent<Renderer> ().material.color = m_InitialColor;
 	}

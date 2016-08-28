@@ -30,7 +30,7 @@ public class ActionExecutor : QActionInterface
 		List<int> possibleActions = new List<int> ();
 		foreach (int action in FieldManager.AVAILABLE_ACTION_IDS) {
 			Field neighbour = correspondingField.getNeighbour (action);
-			if (null != neighbour && neighbour.m_IsAccessible) {
+			if (null != neighbour && neighbour.M_IsAccessible) {
 				possibleActions.Add (action);
 			}
 		}
