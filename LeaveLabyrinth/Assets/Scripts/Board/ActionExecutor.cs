@@ -29,7 +29,8 @@ public class ActionExecutor : QActionInterface
 
 		List<int> possibleActions = new List<int> ();
 		foreach (int action in FieldManager.AVAILABLE_ACTION_IDS) {
-			if (null != correspondingField.getNeighbour (action)) {
+			Field neighbour = correspondingField.getNeighbour (action);
+			if (null != neighbour && neighbour.m_IsAccessible) {
 				possibleActions.Add (action);
 			}
 		}
@@ -49,7 +50,11 @@ public class ActionExecutor : QActionInterface
 		reward = 0f;
 		newState = 0U;
 
-		Field newField = FieldManager.getFieldFromState (state).getNeighbour (actionID);
+		Field origin = FieldManager.getFieldFromState (state);
+		if (null == origin) {
+			return false;
+		}
+		Field newField = origin.getNeighbour (actionID);
 		if (null == newField) {
 			return false;
 		}

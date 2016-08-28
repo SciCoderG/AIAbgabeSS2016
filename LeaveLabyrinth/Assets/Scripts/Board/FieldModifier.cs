@@ -15,6 +15,18 @@ public static class FieldModifier
 
 	private static Field markedForDelete = null;
 
+	public static void updateQualityToState (QualityChangeBuffer qChangeBuffer)
+	{
+		foreach (uint state in qChangeBuffer.qualityChangeBuffer.Keys) {
+			Field field = FieldManager.getFieldFromState (state);
+			float quality = 0f;
+			qChangeBuffer.qualityChangeBuffer.TryGetValue (state, out quality);
+			field.qualityText.text = "" + quality.ToString ("0.000");
+		}
+		qChangeBuffer.clearBuffer ();
+	}
+
+
 	public static void resetVisibleElements ()
 	{
 		if (null != markedForDelete) {

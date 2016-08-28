@@ -4,21 +4,27 @@ using UnityEngine.UI;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 public class AIController : MonoBehaviour
 {
-	private ActionExecutor m_ActionExecutor;
-
-	private LearningBehaviour m_LearningBehaviour;
 
 	public static IteratingUI iteratingUI{ get; set; }
 
 	public static LearningVariablesUI learningVariablesUI{ get; set; }
 
+	private ActionExecutor m_ActionExecutor;
+
+	private QualityChangeBuffer m_QualityChangeBuffer;
+
+	private LearningBehaviour m_LearningBehaviour;
+
 	private bool m_IsIterating;
 	private int m_IterationsTodo;
+	private int m_IterationsToQualityFlush;
 
 	private static readonly long MAX_ITERATINGMILLISECONDS = 14L;
+	private static readonly int MAX_ITERATIONS_TO_FLUSH_QCHANGEBUFFER = 10000;
 
 	private Stopwatch stopWatch;
 
@@ -32,8 +38,9 @@ public class AIController : MonoBehaviour
 	void Start ()
 	{
 		m_ActionExecutor = new ActionExecutor ();
+		m_QualityChangeBuffer = new QualityChangeBuffer ();
 
-		m_LearningBehaviour = new LearningBehaviour (m_ActionExecutor);
+		m_LearningBehaviour = new LearningBehaviour (m_ActionExecutor, m_QualityChangeBuffer);
 		m_LearningBehaviour.init ();
 
 		FieldManager.aiController = this;
@@ -54,11 +61,16 @@ public class AIController : MonoBehaviour
 			while (0 < m_IterationsTodo && MAX_ITERATINGMILLISECONDS > stopWatch.ElapsedMilliseconds) {
 				m_LearningBehaviour.iterate ();
 				m_IterationsTodo--;
+				m_IterationsToQualityFlush++;
 			}
 			stopWatch.Stop ();
 
 			if (1 > m_IterationsTodo) {
 				onStopIterating ();
+			}
+			if (MAX_ITERATIONS_TO_FLUSH_QCHANGEBUFFER <= m_IterationsToQualityFlush) {
+				FieldModifier.updateQualityToState (m_QualityChangeBuffer);
+				m_IterationsToQualityFlush = 0;
 			}
 			updateNumberOfIterationsText ();
 		}
@@ -67,6 +79,8 @@ public class AIController : MonoBehaviour
 	public void onStopIterating ()
 	{
 		m_IsIterating = false;
+		m_IterationsToQualityFlush = 0;
+		FieldModifier.updateQualityToState (m_QualityChangeBuffer);
 		printTable ();
 	}
 

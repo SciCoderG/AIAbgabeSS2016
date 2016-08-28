@@ -15,15 +15,19 @@ public class LearningBehaviour
 
 	public QActionInterface m_QActionInterface{ get; set; }
 
+	public QualityChangeListener m_QualityChangeListener{ get; set; }
+
 	private Random m_Random;
 
 	private uint m_CurrentState;
 
-	private static readonly int MAX_ACTIONSEARCH_TRYS = 16;
+	//
+	private static readonly int MAX_ACTIONSEARCH_TRYS = 8;
 
-	public LearningBehaviour (QActionInterface qActionInterface)
+	public LearningBehaviour (QActionInterface qActionInterface, QualityChangeListener qChangeListener)
 	{
 		m_QActionInterface = qActionInterface;
+		m_QualityChangeListener = qChangeListener;
 	}
 
 	public void init ()
@@ -52,6 +56,7 @@ public class LearningBehaviour
 		int currentAction;
 
 		double doRandomState = m_Random.NextDouble ();
+
 		if (doRandomState < m_RandomState) {
 			m_CurrentState = m_QActionInterface.getRandomState (); // start again from a random state
 		}
@@ -93,6 +98,9 @@ public class LearningBehaviour
 			
 		// store the new quality value;
 		m_QTable.setActionQuality (m_CurrentState, currentAction, quality);
+
+		// broadcast the new quality value
+		m_QualityChangeListener.onQualityToStateChanged (newState, quality);
 
 		// set the new state
 		m_CurrentState = newState;

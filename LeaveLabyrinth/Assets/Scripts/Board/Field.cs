@@ -5,6 +5,7 @@ using System;
 /// <summary>
 /// Data-class for a Field on a Board.
 /// </summary>
+[RequireComponent (typeof(TextMesh))]
 public class Field : MonoBehaviour
 {
 	public float m_Reward{ get; set; }
@@ -19,9 +20,10 @@ public class Field : MonoBehaviour
 	[SerializeField]
 	private Color m_InitialColor = new Color (1f, 1f, 1f);
 
+	public TextMesh qualityText{ get; set; }
+
 	public Field () : this (0, true)
 	{
-		
 	}
 
 	public Field (float reward, bool accessible)
@@ -30,6 +32,11 @@ public class Field : MonoBehaviour
 		m_IsAccessible = accessible;
 
 		m_Neighbours = new Field[FieldManager.AVAILABLE_ACTION_IDS.Length];
+	}
+
+	void Start ()
+	{
+		qualityText = gameObject.GetComponentInChildren<TextMesh> ();
 	}
 
 	public Field getNeighbour (int actionID)
