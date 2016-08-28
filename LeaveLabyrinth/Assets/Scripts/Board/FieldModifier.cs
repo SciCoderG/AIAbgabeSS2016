@@ -146,7 +146,7 @@ public static class FieldModifier
 
 		Field field = fieldObject.GetComponent<Field> ();
 		field.m_IsAccessible = accessible;
-		field.m_Reward = reward;
+		field.M_Reward = reward;
 		field.m_Neighbours = FieldManager.findNeighbours (field);
 
 		for (int i = 0; i < field.m_Neighbours.Length; i++) {

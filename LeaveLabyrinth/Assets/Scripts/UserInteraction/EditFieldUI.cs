@@ -30,7 +30,7 @@ public class EditFieldUI : MonoBehaviour
 			m_CurrentQualityText.text = "Quality:\n-";
 		}
 
-		m_CurrentRewardText.text = "Reward:\n" + field.m_Reward;
+		m_CurrentRewardText.text = "Reward:\n" + field.M_Reward;
 		m_NewRewardField.text = "";
 		m_AccessibleToggle.isOn = field.m_IsAccessible;
 
@@ -59,7 +59,7 @@ public class EditFieldUI : MonoBehaviour
 			Debug.Log ("EditFieldUI: onApplyEditField - could not parse new reward input successfully");
 		}
 
-		m_CurrentField.m_Reward = newReward;
+		m_CurrentField.M_Reward = newReward;
 		// adjust EditFieldUI
 		m_CurrentRewardText.text = "Reward:\n" + newReward;
 		m_NewRewardField.text = "";

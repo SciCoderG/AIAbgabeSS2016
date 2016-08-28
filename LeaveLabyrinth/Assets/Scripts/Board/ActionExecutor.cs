@@ -59,7 +59,7 @@ public class ActionExecutor : QActionInterface
 			return false;
 		}
 
-		reward = newField.m_Reward;
+		reward = newField.M_Reward;
 		newState = FieldManager.getStateFromField (newField);
 
 		return true;

@@ -8,7 +8,17 @@ using System;
 [RequireComponent (typeof(TextMesh))]
 public class Field : MonoBehaviour
 {
-	public float m_Reward{ get; set; }
+	private float m_Reward = 0f;
+	// only just found out, that get/set works like this......... I'M PRACTICALLY DONE
+	public float M_Reward { 
+		get {
+			return m_Reward;
+		}
+		set {
+			updateColor (value);
+			m_Reward = value;
+		}
+	}
 
 	public bool m_IsAccessible{ get; set; }
 
@@ -39,12 +49,12 @@ public class Field : MonoBehaviour
 		m_IsAccessible = accessible;
 
 		m_Neighbours = new Field[FieldManager.AVAILABLE_ACTION_IDS.Length];
-
 	}
 
 	void Start ()
 	{
 		m_QualityText = gameObject.GetComponentInChildren<TextMesh> ();
+		updateColor (m_Reward);
 	}
 
 	public Field getNeighbour (int actionID)
@@ -112,5 +122,18 @@ public class Field : MonoBehaviour
 	}
 
 
-		
+	private void updateColor (float value)
+	{
+		float colorValue = Mathf.Min (1.0f, Mathf.Abs (value));
+		// low values shouldn't be black --> map value from 0.5f to 1.f
+		colorValue = 0.3f + colorValue * 0.7f;
+		if (value > 0f) {
+			m_InitialColor = new Color (0f, colorValue, 0f);
+		} else if (value < 0f) {
+			m_InitialColor = new Color (colorValue, 0f, 0f);
+		} else {
+			m_InitialColor = Color.white;
+		}
+		GetComponent<Renderer> ().material.color = m_InitialColor;
+	}
 }

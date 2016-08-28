@@ -102,7 +102,7 @@ public static class FieldManager
 			fs.m_PosX = field.transform.position.x;
 			fs.m_PosZ = field.transform.position.z;
 			fs.m_Accessible = field.m_IsAccessible;
-			fs.m_Reward = field.m_Reward;
+			fs.m_Reward = field.M_Reward;
 			bs.m_FieldSaves.Add (fs);
 		}
 		// Save BoardSave as a File
