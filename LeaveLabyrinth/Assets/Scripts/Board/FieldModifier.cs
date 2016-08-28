@@ -62,12 +62,11 @@ public static class FieldModifier
 				unselectCurrentField ();
 				return;
 			} else {
-				// unselect old field
-				currentlySelectedField.OnSwitchSelect ();
+				currentlySelectedField.setSelected (false);
 			}
 		} 
 		currentlySelectedField = field;
-		field.OnSwitchSelect ();
+		field.setSelected (true);
 		if (editFieldUI.gameObject.activeInHierarchy) {
 			uint fieldState = FieldManager.getStateFromField (field);
 			short posX, posY;
@@ -81,7 +80,7 @@ public static class FieldModifier
 	{
 		// unselect current field
 		if (null != currentlySelectedField) {
-			currentlySelectedField.OnSwitchSelect ();
+			currentlySelectedField.setSelected (false);
 			currentlySelectedField = null;
 			if (editFieldUI.gameObject.activeInHierarchy) {
 				editFieldUI.onUnselect ();
@@ -163,9 +162,9 @@ public static class FieldModifier
 	public static void onMakeNewField (PossibleField possibleField)
 	{
 		Field newField = createAndAddNewField (possibleField.transform.position.x, possibleField.transform.position.z, true, 0f);
-		hidePossibleFields ();
+		resetVisibleElements ();
 		showPossibleFields (newField);
-		updateSelectedField (newField);
+		onClickField (newField);
 	}
 
 	/** 	>> Show Possible Fields << 	*/

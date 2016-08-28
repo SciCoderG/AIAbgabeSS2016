@@ -56,8 +56,9 @@ public class LearningBehaviour
 		int currentAction;
 
 		double doRandomState = m_Random.NextDouble ();
-
-		if (doRandomState < m_RandomState) {
+		// continue with a random state, if we randomly choose to,
+		// or if the current state is invalid, for example after loading a other board
+		if (doRandomState < m_RandomState || !m_QActionInterface.checkIfStateIsValid (m_CurrentState)) {
 			m_CurrentState = m_QActionInterface.getRandomState (); // start again from a random state
 		}
 

@@ -32,18 +32,24 @@ public class Field : MonoBehaviour
 		}
 	}
 
+	private bool m_IsMarkedForDelete = false;
+
 	public Field[] m_Neighbours{ get; set; }
 
 	private float m_CurrentQuality;
 
 	[SerializeField]
 	private Color m_MarkedForDeleteColor = new Color (1f, 0f, 0f);
-
-	[SerializeField]
-	private Color m_InitialColor = new Color (1f, 1f, 1f);
-
 	[SerializeField]
 	private Color m_SelectedColor = new Color (0f, 1f, 1f);
+	[SerializeField]
+	private Color m_InitalColor = new Color (1f, 1f, 1f);
+	[SerializeField]
+	private Color m_InaccessibleColor = new Color (0f, 0f, 0f);
+
+	private Color m_CurrentColor = new Color (1f, 1f, 1f);
+
+
 
 	private bool m_IsSelected = false;
 
@@ -92,22 +98,20 @@ public class Field : MonoBehaviour
 
 	public void OnMarkForDelete ()
 	{
-		GetComponent<Renderer> ().material.color = m_MarkedForDeleteColor;
+		m_IsMarkedForDelete = true;
+		updateColor ();
 	}
 
 	public void OnUnmarkForDelete ()
 	{
-		GetComponent<Renderer> ().material.color = m_InitialColor;
+		m_IsMarkedForDelete = false;
+		updateColor ();
 	}
 
-	public void OnSwitchSelect ()
+	public void setSelected (bool selected)
 	{
-		m_IsSelected = !m_IsSelected;
-		if (m_IsSelected) {
-			GetComponent<Renderer> ().material.color = m_SelectedColor;
-		} else {
-			GetComponent<Renderer> ().material.color = m_InitialColor;
-		}
+		m_IsSelected = selected;
+		updateColor ();
 	}
 
 	public float getCurrentQuality ()
@@ -132,6 +136,7 @@ public class Field : MonoBehaviour
 	}
 
 
+	// dis ugly
 	private void updateColor ()
 	{
 		if (m_IsAccessible) {
@@ -139,15 +144,22 @@ public class Field : MonoBehaviour
 			// low values shouldn't be black --> map value from 0.5f to 1.f
 			colorValue = 0.3f + colorValue * 0.7f;
 			if (m_Reward > 0f) {
-				m_InitialColor = new Color (0f, colorValue, 0f);
+				m_CurrentColor = new Color (0f, colorValue, 0f);
 			} else if (m_Reward < 0f) {
-				m_InitialColor = new Color (colorValue, 0f, 0f);
+				m_CurrentColor = new Color (colorValue, 0f, 0f);
 			} else {
-				m_InitialColor = Color.white;
+				m_CurrentColor = m_InitalColor;
 			}
 		} else {
-			m_InitialColor = Color.black;
+			m_CurrentColor = m_InaccessibleColor;
 		}
-		GetComponent<Renderer> ().material.color = m_InitialColor;
+
+		if (m_IsSelected) {
+			m_CurrentColor = m_SelectedColor;
+		}
+		if (m_IsMarkedForDelete) {
+			m_CurrentColor = m_MarkedForDeleteColor;
+		}
+		GetComponent<Renderer> ().material.color = m_CurrentColor;
 	}
 }

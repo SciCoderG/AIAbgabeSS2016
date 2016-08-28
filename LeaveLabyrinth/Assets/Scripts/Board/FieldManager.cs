@@ -141,5 +141,8 @@ public static class FieldManager
 
 			existingFields.Add (field);
 		}
+		if (existingFields.Count > 0) {
+			FieldModifier.onClickField (existingFields [0]);
+		}
 	}
 }

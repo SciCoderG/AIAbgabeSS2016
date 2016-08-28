@@ -6,14 +6,14 @@ public class OnCallConnector : MonoBehaviour
 
 	public void onSaveBoard ()
 	{
-		FieldManager.save ();
 		FieldModifier.resetVisibleElements ();
+		FieldManager.save ();
 	}
 
 	public void onLoadBoard ()
 	{
-		FieldManager.load ();
 		FieldModifier.resetVisibleElements ();
+		FieldManager.load ();
 	}
 
 	public void onSetAddingMode ()

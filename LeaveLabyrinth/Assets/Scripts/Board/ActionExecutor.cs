@@ -6,6 +6,11 @@ public class ActionExecutor : QActionInterface
 {
 	private System.Random m_Random = new System.Random ();
 
+	public bool checkIfStateIsValid (uint state)
+	{
+		return (null != FieldManager.getFieldFromState (state));
+	}
+
 	public uint getRandomState ()
 	{
 		if (FieldManager.existingFields.Count <= 0) {
