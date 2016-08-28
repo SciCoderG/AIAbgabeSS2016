@@ -22,7 +22,7 @@ public static class FieldModifier
 			Field field = FieldManager.getFieldFromState (state);
 			float quality = 0f;
 			qChangeBuffer.qualityChangeBuffer.TryGetValue (state, out quality);
-			field.qualityText.text = "" + quality.ToString ("0.000");
+			field.setCurrentQuality (quality);
 		}
 		qChangeBuffer.clearBuffer ();
 	}
@@ -68,7 +68,11 @@ public static class FieldModifier
 		currentlySelectedField = field;
 		field.OnSwitchSelect ();
 		if (editFieldUI.gameObject.activeInHierarchy) {
-			editFieldUI.onNewFieldClicked (field);
+			uint fieldState = FieldManager.getStateFromField (field);
+			short posX, posY;
+			StateConversion.convertFromState (fieldState, out posX, out posY);
+			string stateString = "(" + posX + "," + posY + ")";
+			editFieldUI.onNewFieldClicked (field, stateString);
 		}
 	}
 

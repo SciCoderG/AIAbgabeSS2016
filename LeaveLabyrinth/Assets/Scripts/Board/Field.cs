@@ -14,6 +14,8 @@ public class Field : MonoBehaviour
 
 	public Field[] m_Neighbours{ get; set; }
 
+	private float m_CurrentQuality;
+
 	[SerializeField]
 	private Color m_MarkedForDeleteColor = new Color (1f, 0f, 0f);
 
@@ -25,7 +27,7 @@ public class Field : MonoBehaviour
 
 	private bool m_IsSelected = false;
 
-	public TextMesh qualityText{ get; set; }
+	public TextMesh m_QualityText{ get; set; }
 
 	public Field () : this (0, true)
 	{
@@ -42,7 +44,7 @@ public class Field : MonoBehaviour
 
 	void Start ()
 	{
-		qualityText = gameObject.GetComponentInChildren<TextMesh> ();
+		m_QualityText = gameObject.GetComponentInChildren<TextMesh> ();
 	}
 
 	public Field getNeighbour (int actionID)
@@ -86,6 +88,17 @@ public class Field : MonoBehaviour
 		} else {
 			GetComponent<Renderer> ().material.color = m_InitialColor;
 		}
+	}
+
+	public float getCurrentQuality ()
+	{
+		return m_CurrentQuality;
+	}
+
+	public void setCurrentQuality (float currentQuality)
+	{
+		m_CurrentQuality = currentQuality;
+		m_QualityText.text = currentQuality.ToString ("0.000");
 	}
 
 	void OnMouseUpAsButton ()

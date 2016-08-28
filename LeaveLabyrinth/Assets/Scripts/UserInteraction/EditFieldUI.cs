@@ -5,19 +5,31 @@ using UnityEngine.UI;
 public class EditFieldUI : MonoBehaviour
 {
 
+	public Text m_CurrentStateText;
+	public Text m_CurrentQualityText;
+
 	public Text m_CurrentRewardText;
 	public InputField m_NewRewardField;
 	public Toggle m_AccessibleToggle;
 
 	private Field m_CurrentField;
 
+	private string m_StandardMessage = "Please select a field.";
+
 	public EditFieldUI ()
 	{
 		FieldModifier.editFieldUI = this;
 	}
 
-	public void onNewFieldClicked (Field field)
+	public void onNewFieldClicked (Field field, string currentState)
 	{
+		m_CurrentStateText.text = "State:\n" + currentState;
+		if (field.m_IsAccessible) {
+			m_CurrentQualityText.text = "Quality:\n" + field.getCurrentQuality ().ToString ("0.000000");
+		} else {
+			m_CurrentQualityText.text = "Quality:\n-";
+		}
+
 		m_CurrentRewardText.text = "Reward:\n" + field.m_Reward;
 		m_NewRewardField.text = "";
 		m_AccessibleToggle.isOn = field.m_IsAccessible;
@@ -27,7 +39,9 @@ public class EditFieldUI : MonoBehaviour
 
 	public void onUnselect ()
 	{
-		m_CurrentRewardText.text = "Please select a Field";
+		m_CurrentStateText.text = m_StandardMessage;
+		m_CurrentQualityText.text = m_StandardMessage;
+		m_CurrentRewardText.text = m_StandardMessage;
 		m_NewRewardField.text = "";
 		m_AccessibleToggle.isOn = true;
 		m_CurrentField = null;
