@@ -14,6 +14,7 @@ public static class FieldModifier
 	public const int MODE_DELETING = 1;
 
 	private static Field markedForDelete = null;
+	private static Field currentlySelectedField = null;
 
 	public static void updateQualityToState (QualityChangeBuffer qChangeBuffer)
 	{
@@ -33,6 +34,7 @@ public static class FieldModifier
 			markedForDelete.OnUnmarkForDelete ();
 		}
 		hidePossibleFields ();
+		unselectCurrentField ();
 	}
 
 	public static void onDeleteField (Field field)
@@ -51,8 +53,41 @@ public static class FieldModifier
 		currentMode = fieldModifyingMode;
 	}
 
+	private static void updateSelectedField (Field field)
+	{
+		// change color to selected
+		if (null != currentlySelectedField) {
+			if (field.Equals (currentlySelectedField)) {
+				unselectCurrentField ();
+				return;
+			} else {
+				// unselect old field
+				currentlySelectedField.OnSwitchSelect ();
+			}
+		} 
+		currentlySelectedField = field;
+		field.OnSwitchSelect ();
+		if (editFieldUI.gameObject.activeInHierarchy) {
+			editFieldUI.onNewFieldClicked (field);
+		}
+	}
+
+	private static void unselectCurrentField ()
+	{
+		// unselect current field
+		if (null != currentlySelectedField) {
+			currentlySelectedField.OnSwitchSelect ();
+			currentlySelectedField = null;
+			if (editFieldUI.gameObject.activeInHierarchy) {
+				editFieldUI.onUnselect ();
+			}
+		}
+	}
+
 	public static void onClickField (Field field)
 	{
+		updateSelectedField (field);
+
 		switch (currentMode) {
 		case MODE_ADDING:
 			{
@@ -69,10 +104,6 @@ public static class FieldModifier
 				Debug.Log ("FieldModifier: Current Mode is not implemented");
 				break;
 			}
-		}
-
-		if (editFieldUI.gameObject.activeInHierarchy) {
-			editFieldUI.onNewFieldClicked (field);
 		}
 	}
 
@@ -129,15 +160,17 @@ public static class FieldModifier
 		Field newField = createAndAddNewField (possibleField.transform.position.x, possibleField.transform.position.z, true, 0f);
 		hidePossibleFields ();
 		showPossibleFields (newField);
+		updateSelectedField (newField);
 	}
 
 	/** 	>> Show Possible Fields << 	*/
 
 	public static void onShowPossibleFields (Field field)
 	{
-		if (possibleFields.Count > 0) {
+		if (possibleFields.Count > 0 && !field.Equals (currentlySelectedField)) {
 			hidePossibleFields ();
-		} else {
+		} else if (field.Equals (currentlySelectedField)) {
+			hidePossibleFields ();
 			showPossibleFields (field);
 		}
 	}

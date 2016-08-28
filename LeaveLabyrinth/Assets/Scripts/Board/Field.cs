@@ -20,6 +20,11 @@ public class Field : MonoBehaviour
 	[SerializeField]
 	private Color m_InitialColor = new Color (1f, 1f, 1f);
 
+	[SerializeField]
+	private Color m_SelectedColor = new Color (0f, 1f, 1f);
+
+	private bool m_IsSelected = false;
+
 	public TextMesh qualityText{ get; set; }
 
 	public Field () : this (0, true)
@@ -32,6 +37,7 @@ public class Field : MonoBehaviour
 		m_IsAccessible = accessible;
 
 		m_Neighbours = new Field[FieldManager.AVAILABLE_ACTION_IDS.Length];
+
 	}
 
 	void Start ()
@@ -70,6 +76,16 @@ public class Field : MonoBehaviour
 	public void OnUnmarkForDelete ()
 	{
 		GetComponent<Renderer> ().material.color = m_InitialColor;
+	}
+
+	public void OnSwitchSelect ()
+	{
+		m_IsSelected = !m_IsSelected;
+		if (m_IsSelected) {
+			GetComponent<Renderer> ().material.color = m_SelectedColor;
+		} else {
+			GetComponent<Renderer> ().material.color = m_InitialColor;
+		}
 	}
 
 	void OnMouseUpAsButton ()

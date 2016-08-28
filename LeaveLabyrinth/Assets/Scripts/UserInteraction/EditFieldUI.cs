@@ -25,6 +25,14 @@ public class EditFieldUI : MonoBehaviour
 		m_CurrentField = field;
 	}
 
+	public void onUnselect ()
+	{
+		m_CurrentRewardText.text = "Please select a Field";
+		m_NewRewardField.text = "";
+		m_AccessibleToggle.isOn = true;
+		m_CurrentField = null;
+	}
+
 	public void onApplyEditField ()
 	{
 		if (null == m_CurrentField) {
