@@ -140,7 +140,7 @@ public static class FieldModifier
 
 	public static Field createField (float posX, float posZ, bool accessible, float reward)
 	{
-		GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/FieldPrefab", typeof(GameObject))) as GameObject;
+		GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/FieldPrefab")) as GameObject;
 		fieldObject.transform.position = new Vector3 (posX, 0f, posZ);
 		fieldObject.name = "Field";
 
@@ -186,7 +186,7 @@ public static class FieldModifier
 		for (int i = 0; i < neighbours.Length; i++) {
 			Field possibleNeighbour = neighbours [i];
 			if (null == possibleNeighbour) {
-				GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/PossibleField", typeof(GameObject))) as GameObject;
+				GameObject fieldObject = GameObject.Instantiate (Resources.Load ("Prefabs/PossibleField")) as GameObject;
 				fieldObject.transform.position = field.transform.position + FieldManager.AVAILABLE_ACTION_DIRECTIONS [i];
 
 				possibleFields.Add (fieldObject);

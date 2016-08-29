@@ -39,6 +39,8 @@ public class AIController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
 	{
+		m_AIRepresentation = GameObject.Instantiate (Resources.Load ("Prefabs/AIRepresentation")) as GameObject;
+
 		m_ActionExecutor = new ActionExecutor ();
 		m_QualityChangeBuffer = new QualityChangeBuffer ();
 
@@ -58,7 +60,6 @@ public class AIController : MonoBehaviour
 		updateLearningVariablesShown ();
 		updateNumberOfIterationsText ();
 
-		m_AIRepresentation = GameObject.Instantiate (Resources.Load ("Prefabs/AIRepresentation", typeof(GameObject))) as GameObject;
 		updateAIRepresentationPosition (m_LearningBehaviour.m_CurrentState);
 	}
 	
@@ -93,6 +94,7 @@ public class AIController : MonoBehaviour
 		m_IterationsToQualityFlush = 0;
 		FieldModifier.updateQualityToState (m_QualityChangeBuffer);
 		updateAIRepresentationPosition (m_LearningBehaviour.m_CurrentState);
+		updateNumberOfIterationsText ();
 		printTable ();
 	}
 
@@ -216,6 +218,8 @@ public class AIController : MonoBehaviour
 				UnityEngine.Debug.Log ("AIController - updateAIRepresentationPosition: Either Field or AIRepresentation doesn't have a Renderer.");
 				onHideAIRepresentation ();
 			}
+		} else if (null == m_AIRepresentation) {
+			UnityEngine.Debug.Log ("Couln't load AI Representation");
 		}
 	}
 
