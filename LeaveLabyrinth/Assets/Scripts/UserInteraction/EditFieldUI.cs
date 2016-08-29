@@ -2,6 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 
+/// <summary>
+/// UI class managing the Inputs and Outputs corresponding to a selected field 
+/// </summary>
 public class EditFieldUI : MonoBehaviour
 {
 
@@ -21,6 +24,11 @@ public class EditFieldUI : MonoBehaviour
 		FieldModifier.editFieldUI = this;
 	}
 
+	/// <summary>
+	/// Called, if a new field was clicked. Updates UI to the corresponding field values 
+	/// </summary>
+	/// <param name="field">new Field.</param>
+	/// <param name="currentState">Current state as string.</param>
 	public void onNewFieldClicked (Field field, string currentState)
 	{
 		m_CurrentStateText.text = "State:\n" + currentState;
@@ -37,6 +45,9 @@ public class EditFieldUI : MonoBehaviour
 		m_CurrentField = field;
 	}
 
+	/// <summary>
+	/// Called, if no field is selected. Updates UI 
+	/// </summary>
 	public void onUnselect ()
 	{
 		m_CurrentStateText.text = m_StandardMessage;
@@ -47,6 +58,10 @@ public class EditFieldUI : MonoBehaviour
 		m_CurrentField = null;
 	}
 
+	/// <summary>
+	/// Updates UI, if apply was pressed. 
+	/// I think this does actually the same as "onNewFieldClicked(m_CurrentField)"... Oh, well 
+	/// </summary>
 	public void onApplyEditField ()
 	{
 		if (null == m_CurrentField) {

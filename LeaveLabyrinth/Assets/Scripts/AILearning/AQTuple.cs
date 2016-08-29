@@ -2,8 +2,8 @@
 using System;
 
 /// <summary>
-/// Action quality.
-/// Substitute for the missing Tuple-Class....
+/// An Action - Quality - Tuple. Used as a subsitute for the missing "Tuple" class
+/// Maps a Quality value to an action ID 
 /// </summary>
 public class AQTuple : IComparable
 {

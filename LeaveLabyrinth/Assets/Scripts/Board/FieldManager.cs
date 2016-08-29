@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages all existing fields, including loading and saving of the fields
+/// </summary>
 public static class FieldManager
 {
 	public static List<Field> existingFields = new List<Field> ();
@@ -60,6 +63,12 @@ public static class FieldManager
 		return StateConversion.convertToState (posX, posZ);
 	}
 
+	/// <summary>
+	/// Uses Ray casts to find neighbouring fields. Using this might mean a performance hit,
+	/// but in return it means the neighbours found are up to date
+	/// </summary>
+	/// <returns>The neighbours.</returns>
+	/// <param name="field">Field.</param>
 	public static Field[] findNeighbours (Field field)
 	{
 		Field[] neighbours = new Field[4];
@@ -89,6 +98,10 @@ public static class FieldManager
 		save (fileName);
 	}
 
+	/// <summary>
+	/// Save the fields under the specified name as a .bs file
+	/// </summary>
+	/// <param name="boardName">fileName.</param>
 	public static void save (string boardName)
 	{
 		BoardSave bs = new BoardSave ();
@@ -117,6 +130,10 @@ public static class FieldManager
 		load (saveBoardUI.loadFileDropdown.captionText.text);
 	}
 
+	/// <summary>
+	/// Loads the specified file as a boardName.bs file
+	/// </summary>
+	/// <param name="boardName">Board name.</param>
 	public static void load (string boardName)
 	{
 

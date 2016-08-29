@@ -6,6 +6,9 @@ using System.Threading;
 using System.Diagnostics;
 using System.Collections.Generic;
 
+/// <summary>
+/// Connects the AI-User-Interface to the AI-Logic and the rest of the environment
+/// </summary>
 public class AIController : MonoBehaviour
 {
 
@@ -69,6 +72,7 @@ public class AIController : MonoBehaviour
 		if (m_IsIterating) {
 			m_StopWatch.Reset ();
 			m_StopWatch.Start ();
+			// only iterate for a max of MAX_ITERATINGMILLISECONDS (usually 14ms), to avoid unresponsiveness
 			while (0 < m_IterationsTodo && MAX_ITERATINGMILLISECONDS > m_StopWatch.ElapsedMilliseconds) {
 				m_LearningBehaviour.iterate ();
 				m_IterationsTodo--;
@@ -88,6 +92,9 @@ public class AIController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Stops the current iteration of the Q-Learning Algorithm
+	/// </summary>
 	public void onStopIterating ()
 	{
 		m_IsIterating = false;
@@ -98,6 +105,9 @@ public class AIController : MonoBehaviour
 		printTable ();
 	}
 
+	/// <summary>
+	/// Retrieves number of iterations from UI
+	/// </summary>
 	public void onStartIterating ()
 	{
 		string sNumIterations = iteratingUI.iterationInput.text;
@@ -114,6 +124,9 @@ public class AIController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Retrieves and updates changes of the learning variables for the Q-Learning Algorithm from the UI
+	/// </summary>
 	public void onSetLearningVariables ()
 	{
 		float learningRate;
@@ -140,8 +153,9 @@ public class AIController : MonoBehaviour
 		updateLearningVariablesShown ();
 	}
 
-
-
+	/// <summary>
+	/// Reset everything the AI learned and corresponding UI 
+	/// </summary>
 	public void reset ()
 	{
 		m_LearningBehaviour.reset ();
@@ -150,6 +164,9 @@ public class AIController : MonoBehaviour
 		printTable ();
 	}
 
+	/// <summary>
+	/// Changes current AI-State to the currently selected field
+	/// </summary>
 	public void onUseCurrentFieldSelectionAsAICurrentState ()
 	{
 		Field currentFieldSelection = FieldModifier.currentlySelectedField;
@@ -179,6 +196,11 @@ public class AIController : MonoBehaviour
 		File.WriteAllText (Application.dataPath + "/QTableOutput/printedQTable.txt", m_LearningBehaviour.m_QTable.ToString ());
 	}
 
+	/// <summary>
+	/// Convenience method. Now that I think about it, this is just a Mathf.clamp()....
+	/// </summary>
+	/// <returns>Clamped value</returns>
+	/// <param name="value">Value.</param>
 	private float zeroToOneRangeCheck (float value)
 	{
 		if (value < 0f) {
@@ -190,6 +212,9 @@ public class AIController : MonoBehaviour
 		return value;
 	}
 
+	/// <summary>
+	/// Updates the learning variables shown in the UI.
+	/// </summary>
 	private void updateLearningVariablesShown ()
 	{
 		learningVariablesUI.m_LearningRateInput.text = "" + m_LearningBehaviour.m_LearningRate;
@@ -201,7 +226,10 @@ public class AIController : MonoBehaviour
 		learningVariablesUI.m_RandomStateInput.text = "" + m_LearningBehaviour.m_RandomState;
 	}
 
-
+	/// <summary>
+	/// Updates the AI-representation position to the specified field
+	/// </summary>
+	/// <param name="field">Field.</param>
 	private void updateAIRepresentationPosition (Field field)
 	{
 		// the longer this takes, the uglier everything gets. sorry :(
@@ -223,6 +251,10 @@ public class AIController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Updates the AI representation position to the specified state --> the corresponding field.
+	/// </summary>
+	/// <param name="state">State.</param>
 	private void updateAIRepresentationPosition (uint state)
 	{
 		updateAIRepresentationPosition (FieldManager.getFieldFromState (state));

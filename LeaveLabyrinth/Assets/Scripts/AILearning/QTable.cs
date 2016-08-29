@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System;
 
+/// <summary>
+/// Quality Table. Maps states to actions and their corresponding qualities.
+/// </summary>
 public class QTable
 {
 	public Dictionary<uint , List<AQTuple>> m_DataTable{ get; private set; }
@@ -22,7 +25,11 @@ public class QTable
 		m_Random = new Random ();
 	}
 
-
+	/// <summary>
+	/// Adds the state.
+	/// </summary>
+	/// <returns><c>true</c>, if state was added, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
 	public bool addState (uint state)
 	{
 		try {
@@ -33,11 +40,24 @@ public class QTable
 		}
 	}
 
+	/// <summary>
+	/// Adds the action to the specified state
+	/// </summary>
+	/// <returns><c>true</c>, if action was added, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="actionID">Action</param>
 	public bool addAction (uint state, int actionID)
 	{
 		return addAction (state, actionID, 0);
 	}
 
+	/// <summary>
+	/// Adds the action to the specified state with the specified quality
+	/// </summary>
+	/// <returns><c>true</c>, if action was added, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="actionID">Action I.</param>
+	/// <param name="quality">Quality.</param>
 	public bool addAction (uint state, int actionID, float quality)
 	{
 		List<AQTuple> aqList;
@@ -50,6 +70,13 @@ public class QTable
 		return hasState;
 	}
 
+	/// <summary>
+	/// Gets the quality of the specified action in the specified state
+	/// </summary>
+	/// <returns><c>true</c>, if action quality could be found, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="actionID">Action I.</param>
+	/// <param name="quality">Quality.</param>
 	public bool getActionQuality (uint state, int actionID, out float quality)
 	{
 		AQTuple aq;
@@ -62,6 +89,13 @@ public class QTable
 		return foundAction;
 	}
 
+	/// <summary>
+	/// Set the action-quality at the specified state.
+	/// </summary>
+	/// <returns><c>true</c>, if action quality was set, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="actionID">Action I.</param>
+	/// <param name="quality">Quality.</param>
 	public bool setActionQuality (uint state, int actionID, float quality)
 	{
 		m_NumberOfUpdates++;
@@ -84,6 +118,11 @@ public class QTable
 		return ableToSetAQ;
 	}
 
+	/// <summary>
+	/// Return a random state in the Table as reference
+	/// </summary>
+	/// <returns><c>true</c>, if a random state could be found, <c>false</c> otherwise.</returns>
+	/// <param name="state">State reference.</param>
 	public bool randomState (out uint state)
 	{
 		state = 0U;
@@ -106,6 +145,12 @@ public class QTable
 		return true; // found a random state
 	}
 
+	/// <summary>
+	/// Returns a random action, that's possible in the specified state, as reference
+	/// </summary>
+	/// <returns><c>true</c>, if a random action could be returned, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="actionID">Action I.</param>
 	public bool randomAction (uint state, out int actionID)
 	{
 		actionID = -1; // init with invalid actionID
@@ -126,18 +171,37 @@ public class QTable
 		return hasState;
 	}
 
+	/// <summary>
+	/// Returns the best action in the state as reference
+	/// </summary>
+	/// <returns><c>true</c>, if best action could be found, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="actionID">Action I.</param>
 	public bool getBestAction (uint state, out int actionID)
 	{
 		float unusedQuality;
 		return getBestAction (state, out actionID, out unusedQuality);
 	}
 
+	/// <summary>
+	/// Returns best quality of all the actions in the specified state as reference
+	/// </summary>
+	/// <returns><c>true</c>, if best action quality could be found, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="quality">Quality.</param>
 	public bool getBestActionQuality (uint state, out float quality)
 	{
 		int unusedActionID;
 		return getBestAction (state, out unusedActionID, out quality);
 	}
 
+	/// <summary>
+	/// Returns the best action in the state and the corresponding quality as reference
+	/// </summary>
+	/// <returns><c>true</c>, if best action quality could be found, <c>false</c> otherwise.</returns>
+	/// <param name="state">State.</param>
+	/// <param name="actionID">Action I.</param>
+	/// <param name="quality">Quality.</param>
 	public bool getBestAction (uint state, out int actionID, out float quality)
 	{
 		
@@ -180,6 +244,9 @@ public class QTable
 		return hasState;
 	}
 
+	/// <summary>
+	/// Reset everything, that was learned
+	/// </summary>
 	public void reset ()
 	{
 		m_NumberOfUpdates = 0;

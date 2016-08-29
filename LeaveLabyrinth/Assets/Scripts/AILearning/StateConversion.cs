@@ -1,8 +1,17 @@
 ﻿using System.Collections;
 using System;
 
+/// <summary>
+/// Converts information from the environment into a state used by the AI and vice versa
+/// </summary>
 public class StateConversion
 {
+	/// <summary>
+	/// Converts the position variables into a state
+	/// </summary>
+	/// <returns>The corresponding state</returns>
+	/// <param name="posX">Position x.</param>
+	/// <param name="posZ">Position z.</param>
 	public static uint convertToState (short posX, short posZ)
 	{
 		byte[] rowBytes = BitConverter.GetBytes (posX);
@@ -18,6 +27,12 @@ public class StateConversion
 		return convertedState;
 	}
 
+	/// <summary>
+	/// Converts the state into the position variables and returns them as references
+	/// </summary>
+	/// <param name="state">State.</param>
+	/// <param name="posX">Position x.</param>
+	/// <param name="posZ">Position z.</param>
 	public static void convertFromState (uint state, out short posX, out short posZ)
 	{
 		byte[] stateBytes = BitConverter.GetBytes (state);

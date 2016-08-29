@@ -3,11 +3,14 @@ using UnityEngine;
 using System;
 
 /// <summary>
-/// Data-class for a Field on a Board.
+/// One Field with a reward and accessability. Used as visual representation of a state in the 
+/// Reinforcement-Learning-AI
 /// </summary>
 [RequireComponent (typeof(TextMesh))]
 public class Field : MonoBehaviour
 {
+	public Field[] m_Neighbours{ get; set; }
+
 	private float m_Reward = 0f;
 	// only just found out, that get/set works like this......... I'M PRACTICALLY DONE
 	public float M_Reward { 
@@ -34,8 +37,9 @@ public class Field : MonoBehaviour
 
 	private bool m_IsMarkedForDelete = false;
 
-	public Field[] m_Neighbours{ get; set; }
-
+	/// <summary>
+	/// Only used, to show the current quality to this state as stored in the QTable
+	/// </summary>
 	private float m_CurrentQuality;
 
 	[SerializeField]
@@ -48,8 +52,6 @@ public class Field : MonoBehaviour
 	private Color m_InaccessibleColor = new Color (0f, 0f, 0f);
 
 	private Color m_CurrentColor = new Color (1f, 1f, 1f);
-
-
 
 	private bool m_IsSelected = false;
 
@@ -114,6 +116,11 @@ public class Field : MonoBehaviour
 		updateColor ();
 	}
 
+	/// <summary>
+	/// This should just be used to display the current quality to the corresponding state of this field
+	///  on the surface of the field. This quality could differ to the quality stored in the actual AI-Quality-Table
+	/// </summary>
+	/// <returns>The current quality.</returns>
 	public float getCurrentQuality ()
 	{
 		return m_CurrentQuality;

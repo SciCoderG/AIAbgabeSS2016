@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
+/// <summary>
+/// Manages saving and loading of the "board" (which means saving and loading of a Boardsave,
+/// which contains all FieldSaves needed. There is no actual "Board" class anymore 
+/// </summary>
 public static class SaveLoadManager
 {
 	private static string boardSaveDirectory = "/BoardSaves/";
@@ -33,7 +37,7 @@ public static class SaveLoadManager
 
 	public static string[] getBoardFileNames ()
 	{
-		checkDirectories ();
+		checkBoardSaveDirectory ();
 		string[] boardFileNames = Directory.GetFiles (Application.persistentDataPath + boardSaveDirectory, "*" + boardSaveFileEnding);
 		for (int i = 0; i < boardFileNames.Length; i++) {
 			// truncate data path beginning
@@ -46,7 +50,10 @@ public static class SaveLoadManager
 		return boardFileNames;
 	}
 
-	private static void checkDirectories ()
+	/// <summary>
+	/// Checks, if the boardsave directory exists, and, if not, creates it.
+	/// </summary>
+	private static void checkBoardSaveDirectory ()
 	{
 		if (!Directory.Exists (Application.persistentDataPath + boardSaveDirectory)) {
 			Directory.CreateDirectory (Application.persistentDataPath + boardSaveDirectory);

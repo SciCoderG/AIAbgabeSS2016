@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Implements a simple camera movement. 
+/// Scrolling (in y direction) will be applied instantly, while changes in
+/// x- or z-direction are damped based on a spring equation.
+/// Spring equation was implemented as suggested in "Spieleprogrammierung, Übungsblatt 7, Hochschule Trier"
+/// </summary>
 public class CameraMovement : MonoBehaviour
 {
 
@@ -53,6 +59,8 @@ public class CameraMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
+		
+
 		float m_scrollAmount = -1f * Input.GetAxis ("Mouse ScrollWheel");
 
 		// if nothing changed --> skip computation
@@ -89,6 +97,7 @@ public class CameraMovement : MonoBehaviour
 		}
 
 		// spring equation computation for smooth camera transitions. 
+		// implemented as suggested in "Spieleprogrammierung, Übungsblatt 7, Hochschule Trier"
 		Vector3 springForce = m_SpringConstant * (m_CameraTarget - m_Camera.transform.position) + m_DampingValue * m_CameraSpeed;
 		if (m_CameraMass > 0f) {
 			m_CameraSpeed = (Time.smoothDeltaTime * springForce) / m_CameraMass;

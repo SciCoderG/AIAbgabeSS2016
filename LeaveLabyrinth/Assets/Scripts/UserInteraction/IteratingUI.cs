@@ -2,6 +2,9 @@
 using System.Collections;
 using UnityEngine.UI;
 
+/// <summary>
+/// UI class managing the Inputs and Outputs corresponding to the number-of-iterations-UI
+/// </summary>
 public class IteratingUI : MonoBehaviour
 {
 
@@ -11,17 +14,5 @@ public class IteratingUI : MonoBehaviour
 	public IteratingUI ()
 	{
 		AIController.iteratingUI = this;
-	}
-
-	// Use this for initialization
-	void Start ()
-	{
-	
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-	
 	}
 }

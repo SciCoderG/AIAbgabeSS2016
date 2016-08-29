@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+/// <summary>
+/// UI class managing the Inputs and Outputs corresponding to the Save-and-Load-Board-UI
+/// </summary>
 public class SaveBoardUI : MonoBehaviour
 {
 	public InputField saveFileInput;

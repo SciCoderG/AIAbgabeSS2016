@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 
+/// <summary>
+/// Serializable class, used to store non-unity-information of the Field-class
+/// </summary>
 [System.Serializable]
 public class FieldSave
 {

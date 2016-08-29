@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System;
 
+/// <summary>
+/// Learning behaviour class. Implements the QLearning-Algorithm.
+/// </summary>
 public class LearningBehaviour
 {
 	public float m_LearningRate{ get; set; }
@@ -30,6 +33,9 @@ public class LearningBehaviour
 		m_QualityChangeListener = qChangeListener;
 	}
 
+	/// <summary>
+	/// Initiates the LearningBehaviour.
+	/// </summary>
 	public void init ()
 	{
 		m_QTable = new QTable ("first");
@@ -44,6 +50,10 @@ public class LearningBehaviour
 		m_Random = new Random ();
 	}
 
+	/// <summary>
+	/// Iterate the QLearning-Algorithm the specified numberOfIterations.
+	/// </summary>
+	/// <param name="numberOfIterations">Number of iterations.</param>
 	public void iterate (int numberOfIterations)
 	{
 		for (int i = 0; i < numberOfIterations; i++) {
@@ -51,6 +61,10 @@ public class LearningBehaviour
 		}
 	}
 
+	/// <summary>
+	/// One iteration of the QLearning-Algorithm. This means that the AI takes one possible action originating
+	/// from the current state and updates the QTable afterwards
+	/// </summary>
 	public void iterate ()
 	{
 		int currentAction;
@@ -107,6 +121,9 @@ public class LearningBehaviour
 		m_CurrentState = newState;
 	}
 
+	/// <summary>
+	/// Reset everything, the AI has learned
+	/// </summary>
 	public void reset ()
 	{
 		m_QTable.reset ();

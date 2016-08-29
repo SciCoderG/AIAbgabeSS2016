@@ -1,5 +1,8 @@
 ﻿using System.Collections;
 
+/// <summary>
+/// Implement a function, that's called, if the quality of a state changed
+/// </summary>
 public interface QualityChangeListener
 {
 	/// <summary>

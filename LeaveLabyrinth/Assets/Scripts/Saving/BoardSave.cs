@@ -1,6 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Serializable Class, used to compress the fieldsaves into one file
+/// </summary>
 [System.Serializable]
 public class BoardSave
 {
