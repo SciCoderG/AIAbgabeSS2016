@@ -4,6 +4,16 @@ using System.Collections;
 public class OnCallConnector : MonoBehaviour
 {
 
+	public void onClose ()
+	{
+		Application.Quit ();
+	}
+
+	public void onSwitchScreenMode ()
+	{
+		Screen.fullScreen = !Screen.fullScreen;
+	}
+
 	public void onSaveBoard ()
 	{
 		FieldModifier.resetVisibleElements ();

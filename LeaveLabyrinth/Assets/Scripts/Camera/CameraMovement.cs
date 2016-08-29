@@ -53,7 +53,7 @@ public class CameraMovement : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		float m_scrollAmount = Input.GetAxis ("Mouse ScrollWheel");
+		float m_scrollAmount = -1f * Input.GetAxis ("Mouse ScrollWheel");
 
 		// if nothing changed --> skip computation
 		if (null == FieldModifier.currentlySelectedField && Mathf.Abs (m_scrollAmount) < 0.001f) {
