@@ -24,14 +24,16 @@ public class AIController : MonoBehaviour
 	private int m_IterationsToQualityFlush;
 
 	private static readonly long MAX_ITERATINGMILLISECONDS = 14L;
-	private static readonly int MAX_ITERATIONS_TO_FLUSH_QCHANGEBUFFER = 10000;
+	private static readonly int MAX_ITERATIONS_TO_FLUSH_QCHANGEBUFFER = 1000;
 
-	private Stopwatch stopWatch;
+	private Stopwatch m_StopWatch;
+
+	private GameObject m_AIRepresentation;
 
 	public AIController ()
 	{
 		m_IsIterating = false;
-		stopWatch = new Stopwatch ();
+		m_StopWatch = new Stopwatch ();
 	}
 
 	// Use this for initialization
@@ -45,31 +47,40 @@ public class AIController : MonoBehaviour
 
 		FieldManager.aiController = this;
 
-		FieldModifier.createAndAddNewField (0f, 0f, true, 0f);
-		FieldModifier.createAndAddNewField (1f, 0f, true, 0f);
+		string[] boardFileNames = SaveLoadManager.getBoardFileNames ();
+		if (null != boardFileNames && boardFileNames.Length > 0) {
+			FieldManager.load (boardFileNames [0]);
+		} else {
+			FieldModifier.createAndAddNewField (0f, 0f, true, 0f);
+			FieldModifier.createAndAddNewField (1f, 0f, true, 0f);
+		}
 
 		updateLearningVariablesShown ();
 		updateNumberOfIterationsText ();
+
+		m_AIRepresentation = GameObject.Instantiate (Resources.Load ("Prefabs/AIRepresentation", typeof(GameObject))) as GameObject;
+		updateAIRepresentationPosition (m_LearningBehaviour.m_CurrentState);
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 		if (m_IsIterating) {
-			stopWatch.Reset ();
-			stopWatch.Start ();
-			while (0 < m_IterationsTodo && MAX_ITERATINGMILLISECONDS > stopWatch.ElapsedMilliseconds) {
+			m_StopWatch.Reset ();
+			m_StopWatch.Start ();
+			while (0 < m_IterationsTodo && MAX_ITERATINGMILLISECONDS > m_StopWatch.ElapsedMilliseconds) {
 				m_LearningBehaviour.iterate ();
 				m_IterationsTodo--;
 				m_IterationsToQualityFlush++;
 			}
-			stopWatch.Stop ();
+			m_StopWatch.Stop ();
 
 			if (1 > m_IterationsTodo) {
 				onStopIterating ();
 			}
 			if (MAX_ITERATIONS_TO_FLUSH_QCHANGEBUFFER <= m_IterationsToQualityFlush) {
 				FieldModifier.updateQualityToState (m_QualityChangeBuffer);
+				updateAIRepresentationPosition (m_LearningBehaviour.m_CurrentState);
 				m_IterationsToQualityFlush = 0;
 			}
 			updateNumberOfIterationsText ();
@@ -81,6 +92,7 @@ public class AIController : MonoBehaviour
 		m_IsIterating = false;
 		m_IterationsToQualityFlush = 0;
 		FieldModifier.updateQualityToState (m_QualityChangeBuffer);
+		updateAIRepresentationPosition (m_LearningBehaviour.m_CurrentState);
 		printTable ();
 	}
 
@@ -132,7 +144,27 @@ public class AIController : MonoBehaviour
 	{
 		m_LearningBehaviour.reset ();
 		updateNumberOfIterationsText ();
+		onUseCurrentFieldSelectionAsAICurrentState ();
 		printTable ();
+	}
+
+	public void onUseCurrentFieldSelectionAsAICurrentState ()
+	{
+		Field currentFieldSelection = FieldModifier.currentlySelectedField;
+		if (null != currentFieldSelection) {
+			updateAIRepresentationPosition (currentFieldSelection);
+			m_LearningBehaviour.m_CurrentState = FieldManager.getStateFromField (currentFieldSelection);
+		}
+	}
+
+	public void onShowAIRepresentation ()
+	{
+		m_AIRepresentation.SetActive (true);
+	}
+
+	public void onHideAIRepresentation ()
+	{
+		m_AIRepresentation.SetActive (false);
 	}
 
 	private void updateNumberOfIterationsText ()
@@ -165,5 +197,30 @@ public class AIController : MonoBehaviour
 		learningVariablesUI.m_RandomActionInput.text = "" + m_LearningBehaviour.m_RandomAction;
 
 		learningVariablesUI.m_RandomStateInput.text = "" + m_LearningBehaviour.m_RandomState;
+	}
+
+
+	private void updateAIRepresentationPosition (Field field)
+	{
+		// the longer this takes, the uglier everything gets. sorry :(
+		if (null != field && null != m_AIRepresentation) {
+			Renderer fieldRenderer = field.GetComponent<Renderer> ();
+			Renderer aiRenderer = m_AIRepresentation.GetComponent < Renderer> ();
+			if (null != fieldRenderer && null != aiRenderer) {
+				Vector3 offset = new Vector3 (
+					                 0f, 
+					                 fieldRenderer.bounds.extents.y + aiRenderer.bounds.extents.y, 
+					                 0f);
+				m_AIRepresentation.transform.position = field.transform.position + offset;
+			} else {
+				UnityEngine.Debug.Log ("AIController - updateAIRepresentationPosition: Either Field or AIRepresentation doesn't have a Renderer.");
+				onHideAIRepresentation ();
+			}
+		}
+	}
+
+	private void updateAIRepresentationPosition (uint state)
+	{
+		updateAIRepresentationPosition (FieldManager.getFieldFromState (state));
 	}
 }

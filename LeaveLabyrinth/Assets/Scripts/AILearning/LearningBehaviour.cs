@@ -19,7 +19,7 @@ public class LearningBehaviour
 
 	private Random m_Random;
 
-	private uint m_CurrentState;
+	public uint m_CurrentState{ get; set; }
 
 	//
 	private static readonly int MAX_ACTIONSEARCH_TRYS = 8;

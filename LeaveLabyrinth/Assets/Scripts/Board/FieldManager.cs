@@ -119,7 +119,6 @@ public static class FieldManager
 
 	public static void load (string boardName)
 	{
-		aiController.reset ();
 
 		foreach (Field field in existingFields) {
 			if (null == field) {
@@ -144,5 +143,7 @@ public static class FieldManager
 		if (existingFields.Count > 0) {
 			FieldModifier.onClickField (existingFields [0]);
 		}
+		aiController.reset ();
+
 	}
 }
