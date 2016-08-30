@@ -14,14 +14,14 @@ Platform assembly: C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWin
 Loading C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-- Completed reload, in  0.194 seconds
+- Completed reload, in  0.048 seconds
 Platform assembly: C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\Managed\System.dll (this message is harmless)
 desktop: 1366x768 60Hz; virtual: 1366x768 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 0.893797 ms
+UnloadTime: 0.747967 ms
 IsolatedStorageException: Could not find a part of the path "C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\QTableOutput\printedQTable.txt".
   at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) [0x00000] in <filename unknown>:0 
   at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share) [0x00000] in <filename unknown>:0 
@@ -37,50 +37,4 @@ IsolatedStorageException: Could not find a part of the path "C:\Users\David_000\
 (Filename:  Line: -1)
 
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: 2630 -> priority: 1 
-IsolatedStorageException: Could not find a part of the path "C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\QTableOutput\printedQTable.txt".
-  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) [0x00000] in <filename unknown>:0 
-  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share) [0x00000] in <filename unknown>:0 
-  at System.IO.StreamWriter..ctor (System.String path, Boolean append, System.Text.Encoding encoding, Int32 bufferSize) [0x00000] in <filename unknown>:0 
-  at System.IO.StreamWriter..ctor (System.String path, Boolean append, System.Text.Encoding encoding) [0x00000] in <filename unknown>:0 
-  at System.IO.File.WriteAllText (System.String path, System.String contents, System.Text.Encoding encoding) [0x00000] in <filename unknown>:0 
-  at System.IO.File.WriteAllText (System.String path, System.String contents) [0x00000] in <filename unknown>:0 
-  at AIController.printTable () [0x00000] in <filename unknown>:0 
-  at AIController.reset () [0x00000] in <filename unknown>:0 
-  at FieldManager.load (System.String boardName) [0x00000] in <filename unknown>:0 
-  at FieldManager.load () [0x00000] in <filename unknown>:0 
-  at OnCallConnector.onLoadBoard () [0x00000] in <filename unknown>:0 
-  at UnityEngine.Events.InvokableCall.Invoke (System.Object[] args) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Events.InvokableCallList.Invoke (System.Object[] parameters) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Events.UnityEventBase.Invoke (System.Object[] parameters) [0x00000] in <filename unknown>:0 
-  at UnityEngine.Events.UnityEvent.Invoke () [0x00000] in <filename unknown>:0 
-  at UnityEngine.UI.Button.Press () [0x00000] in <filename unknown>:0 
-  at UnityEngine.UI.Button.OnPointerClick (UnityEngine.EventSystems.PointerEventData eventData) [0x00000] in <filename unknown>:0 
-  at UnityEngine.EventSystems.ExecuteEvents.Execute (IPointerClickHandler handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00000] in <filename unknown>:0 
-  at UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerClickHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00000] in <filename unknown>:0 
-UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
-UnityEngine.DebugLogHandler:LogException(Exception, Object)
-UnityEngine.Logger:LogException(Exception, Object)
-UnityEngine.Debug:LogException(Exception)
-UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1)
-UnityEngine.EventSystems.StandaloneInputModule:ProcessMousePress(MouseButtonEventData)
-UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent(Int32)
-UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent()
-UnityEngine.EventSystems.StandaloneInputModule:Process()
-UnityEngine.EventSystems.EventSystem:Update()
- 
-(Filename:  Line: -1)
-
-IsolatedStorageException: Could not find a part of the path "C:\Users\David_000\Documents\AIAbgabeSS2016\LeaveLabyrinthWindowsx86\aiLearning_Data\QTableOutput\printedQTable.txt".
-  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, Boolean anonymous, FileOptions options) [0x00000] in <filename unknown>:0 
-  at System.IO.FileStream..ctor (System.String path, FileMode mode, FileAccess access, FileShare share) [0x00000] in <filename unknown>:0 
-  at System.IO.StreamWriter..ctor (System.String path, Boolean append, System.Text.Encoding encoding, Int32 bufferSize) [0x00000] in <filename unknown>:0 
-  at System.IO.StreamWriter..ctor (System.String path, Boolean append, System.Text.Encoding encoding) [0x00000] in <filename unknown>:0 
-  at System.IO.File.WriteAllText (System.String path, System.String contents, System.Text.Encoding encoding) [0x00000] in <filename unknown>:0 
-  at System.IO.File.WriteAllText (System.String path, System.String contents) [0x00000] in <filename unknown>:0 
-  at AIController.printTable () [0x00000] in <filename unknown>:0 
-  at AIController.onStopIterating () [0x00000] in <filename unknown>:0 
-  at AIController.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
+  Thread -> id: 1f70 -> priority: 1 
