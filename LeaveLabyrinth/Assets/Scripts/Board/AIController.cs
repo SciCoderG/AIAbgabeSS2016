@@ -56,8 +56,21 @@ public class AIController : MonoBehaviour
 		if (null != boardFileNames && boardFileNames.Length > 0) {
 			FieldManager.load (boardFileNames [0]);
 		} else {
+			// create Sample-Szenario from the lecutre
 			FieldModifier.createAndAddNewField (0f, 0f, true, 0f);
 			FieldModifier.createAndAddNewField (1f, 0f, true, 0f);
+			FieldModifier.createAndAddNewField (2f, 0f, true, 0f);
+			FieldModifier.createAndAddNewField (3f, 0f, true, -1f);
+
+			FieldModifier.createAndAddNewField (0f, 1f, true, 0f);
+			FieldModifier.createAndAddNewField (1f, 1f, false, 0f);
+			FieldModifier.createAndAddNewField (2f, 1f, true, 0f);
+			FieldModifier.createAndAddNewField (3f, 1f, true, 0f);
+
+			FieldModifier.createAndAddNewField (0f, 2f, true, 0f);
+			FieldModifier.createAndAddNewField (1f, 2f, true, 0f);
+			FieldModifier.createAndAddNewField (2f, 2f, true, 0f);
+			FieldModifier.createAndAddNewField (3f, 2f, true, 1f);
 		}
 
 		updateLearningVariablesShown ();
